@@ -1,121 +1,170 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
-
-function App() {
-  const [count, setCount] = useState(0)
-
+import { useState, useEffect, useRef } from 'react'
+import Hero from './components/Hero'
+import About from './components/About'
+import Experience from './components/Experience'
+import Projects from './components/Projects'
+import Skills from './components/Skills'
+import JobFitChecker from './components/JobFitChecker'
+import Contact from './components/Contact'
+import AdminPanel from './components/AdminPanel'
+ 
+const WORKER = 'https://YOUR_SUBDOMAIN.workers.dev'
+ 
+export { WORKER }
+ 
+export default function App() {
+  const [theme, setTheme] = useState('dark')
+  const [scrolled, setScrolled] = useState(false)
+  const [adminOpen, setAdminOpen] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const logoClickCount = useRef(0)
+  const logoClickTimer = useRef(null)
+ 
+  // Theme persistence
+  useEffect(() => {
+    const saved = localStorage.getItem('portfolio-theme') || 'dark'
+    setTheme(saved)
+    document.documentElement.setAttribute('data-theme', saved)
+  }, [])
+ 
+  const toggleTheme = () => {
+    const next = theme === 'dark' ? 'light' : 'dark'
+    setTheme(next)
+    document.documentElement.setAttribute('data-theme', next)
+    localStorage.setItem('portfolio-theme', next)
+  }
+ 
+  // Navbar scroll effect
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 20)
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+ 
+  // Hidden admin: 5 rapid clicks on logo
+  const handleLogoClick = () => {
+    logoClickCount.current += 1
+    clearTimeout(logoClickTimer.current)
+    if (logoClickCount.current >= 5) {
+      logoClickCount.current = 0
+      setAdminOpen(true)
+    } else {
+      logoClickTimer.current = setTimeout(() => {
+        logoClickCount.current = 0
+      }, 1500)
+    }
+  }
+ 
+  const scrollTo = (id) => {
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
+    setMobileMenuOpen(false)
+  }
+ 
+  const navLinks = [
+    { label: 'About',      id: 'about' },
+    { label: 'Experience', id: 'experience' },
+    { label: 'Projects',   id: 'projects' },
+    { label: 'Skills',     id: 'skills' },
+    { label: 'Job Fit',    id: 'jobfit' },
+    { label: 'Contact',    id: 'contact' },
+  ]
+ 
   return (
     <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
+      {/* Navbar */}
+      <nav className={`navbar${scrolled ? ' scrolled' : ''}`}>
+        <div className="navbar-inner">
+          <div
+            className="nav-logo"
+            onClick={handleLogoClick}
+            title="Joshua Werlein"
+          >
+            JW<span>.</span>
+          </div>
+ 
+          <ul className="nav-links">
+            {navLinks.map(l => (
+              <li key={l.id}>
+                <a onClick={() => scrollTo(l.id)} style={{ cursor: 'pointer' }}>
+                  {l.label}
+                </a>
+              </li>
+            ))}
           </ul>
+ 
+          <div className="nav-actions">
+            <button
+              className="theme-toggle"
+              onClick={toggleTheme}
+              aria-label="Toggle theme"
+              title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+            >
+              {theme === 'dark' ? '☀️' : '🌙'}
+            </button>
+            <a
+              href="/resume.pdf"
+              className="btn btn-primary"
+              style={{ padding: '8px 16px', fontSize: '0.8rem' }}
+              onClick={() => {
+                fetch(`${WORKER}/track`, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ event: 'resume_download' }),
+                }).catch(() => {})
+              }}
+              download
+            >
+              Resume ↓
+            </a>
+          </div>
         </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
+      </nav>
+ 
+      {/* Page Sections */}
+      <main>
+        <Hero onScrollTo={scrollTo} />
+        <div className="divider" />
+        <About />
+        <div className="divider" />
+        <Experience />
+        <div className="divider" />
+        <Projects />
+        <div className="divider" />
+        <Skills />
+        <div className="divider" />
+        <JobFitChecker />
+        <div className="divider" />
+        <Contact />
+      </main>
+ 
+      {/* Footer */}
+      <footer style={{
+        borderTop: '1px solid var(--border)',
+        padding: '32px 24px',
+        textAlign: 'center',
+        color: 'var(--text-3)',
+        fontSize: '0.8rem',
+        fontFamily: 'var(--font-mono)',
+        position: 'relative',
+        zIndex: 1,
+      }}>
+        <div style={{ maxWidth: 1100, margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
+          <span>© {new Date().getFullYear()} Joshua Werlein — Built with React + Cloudflare</span>
+          <div style={{ display: 'flex', gap: 20 }}>
+            <a href="https://github.com/joshua-werlein" target="_blank" rel="noreferrer" style={{ color: 'var(--text-3)' }}>GitHub</a>
+            <a href="https://linkedin.com/in/joshua-werlein" target="_blank" rel="noreferrer" style={{ color: 'var(--text-3)' }}>LinkedIn</a>
+            <a href="mailto:jjwerlein@gmail.com" style={{ color: 'var(--text-3)' }}>Email</a>
+          </div>
         </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
+      </footer>
+ 
+      {/* Admin Panel */}
+      {adminOpen && (
+        <AdminPanel
+          workerUrl={WORKER}
+          onClose={() => setAdminOpen(false)}
+        />
+      )}
     </>
   )
 }
-
-export default App
