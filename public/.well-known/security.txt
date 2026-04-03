@@ -1,0 +1,4 @@
+Contact: mailto:jjwerlein@gmail.com
+Canonical: https://joshuawerlein.com/.well-known/security.txt
+Expires: 2027-01-01T00:00:00Z
+Preferred-Languages: en
