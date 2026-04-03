@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://joshuawerlein.com/sitemap.xml
