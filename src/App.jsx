@@ -8,7 +8,7 @@ import JobFitChecker from './components/JobFitChecker'
 import Contact from './components/Contact'
 import AdminPanel from './components/AdminPanel'
  
-const WORKER = 'https://YOUR_SUBDOMAIN.workers.dev'
+const WORKER = 'https://portfolio-worker.jjwerlein.workers.dev'
  
 export { WORKER }
  
