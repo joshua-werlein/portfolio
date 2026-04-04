@@ -25,6 +25,10 @@ export default function JobFitChecker() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ jobDescription: jobText }),
       })
+      if (res.status === 429) {
+        setError('AI analyzer is temporarily rate limited. Please try again in a few minutes.')
+        return
+      }
       if (!res.ok) throw new Error(`Server error: ${res.status}`)
       const data = await res.json()
       setResult(data)
