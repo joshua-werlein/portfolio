@@ -94,7 +94,7 @@ export default function JobFitChecker() {
                 borderRadius: 100,
                 padding: '2px 8px',
               }}>
-                Powered by Gemini Flash
+                Powered by Llama 3.3
               </span>
             </div>
  
@@ -290,7 +290,7 @@ export default function JobFitChecker() {
           fontFamily: 'var(--font-mono)',
           textAlign: 'center',
         }}>
-          AI analysis via Google Gemini Flash — results are a guide, not a guarantee.
+          AI analysis via Google Llama 3.3 (Groq) — results are a guide, not a guarantee.
         </p>
       </div>
  
