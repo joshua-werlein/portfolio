@@ -53,7 +53,7 @@ html {
   scroll-padding-top: 72px;
 }
 
-body {
+html, body {
   font-family: var(--font-body);
   background: var(--bg);
   color: var(--text);
