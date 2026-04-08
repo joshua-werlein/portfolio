@@ -20,7 +20,7 @@ export default function Hero({ onScrollTo }) {
       <div className="container">
         <div style={{
           display: 'grid',
-          gridTemplateColumns: '1fr auto',
+          gridTemplateColumns: '1fr minmax(0, 220px)',
           gap: 64,
           alignItems: 'center',
         }}
@@ -148,7 +148,7 @@ export default function Hero({ onScrollTo }) {
             <div style={{
               position: 'absolute',
               bottom: -8,
-              right: -16,
+              right: 0,
               background: 'var(--surface)',
               border: '1px solid var(--border)',
               borderRadius: 10,
