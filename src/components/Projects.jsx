@@ -20,7 +20,7 @@ const PROJECTS = [
     tags: ['Java', 'Android', 'Room DB', 'Jetpack', 'ZXing', 'Biometrics', 'Google Play'],
     links: [
       { label: 'Google Play', url: 'https://play.google.com/store/apps/details?id=com.bestbymanager.app', primary: true },
-      { label: 'GitHub', url: 'https://github.com/joshua-werlein', primary: false },
+      { label: 'GitHub', url: 'https://github.com/joshua-werlein/BestByManager', primary: false },
     ],
     type: 'Android App',
     typeColor: '#34A853',
