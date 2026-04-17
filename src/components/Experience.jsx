@@ -29,7 +29,7 @@ const EXPERIENCES = [
     status: 'live',
     links: [
       { label: 'Google Play', url: 'https://play.google.com/store/apps/details?id=com.bestbymanager.app' },
-      { label: 'GitHub', url: 'https://github.com/joshua-werlein' },
+      { label: 'GitHub', url: 'https://github.com/joshua-werlein/BestByManager' },
     ],
     bullets: [
       'Shipped a kiosk-style Android inventory management app to Google Play production — managed the full release lifecycle from closed beta through v2.0.0 launch.',
