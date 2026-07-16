@@ -71,6 +71,28 @@ const PROJECTS = [
     type: 'Web Platform',
     typeColor: '#0070cc',
   },
+  {
+    id: 'arkham',
+    name: 'Arkham Enterprises',
+    tagline: 'Marketing & lead-gen site for a solar & construction company',
+    impact: 'Live production site — contact and quote-request forms wired to a Cloudflare Workers backend via Resend',
+    description:
+      'A multi-page marketing and lead-generation site for Apex Solar & Construction, built in React with a Cloudflare Workers backend handling spam-protected contact and quote-request forms.',
+    architecture: [
+      'React app (React Router, Framer Motion) built with Create React App, deployed as static assets on Cloudflare Workers',
+      'Custom Cloudflare Worker backend serving the SPA and handling /api/* form submissions',
+      'Contact and quote-request forms emailed via the Resend API with honeypot spam protection',
+      'SEO handled via react-helmet-async for per-page metadata',
+      'Multi-step quote request flow capturing project type, property details, budget, and timeline',
+    ],
+    tags: ['React', 'React Router', 'Framer Motion', 'Cloudflare Workers', 'Resend API'],
+    links: [
+      { label: 'arkhamsolar.com', url: 'https://www.arkhamsolar.com', primary: true },
+      { label: 'GitHub', url: 'https://github.com/joshua-werlein/arkham-solar', primary: false },
+    ],
+    type: 'Web Platform',
+    typeColor: '#F4A100',
+  },
 ]
  
 export default function Projects() {
