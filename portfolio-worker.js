@@ -1,23 +1,24 @@
 /**
  * Portfolio Cloudflare Worker
- * 
+ *
  * Endpoints:
- *   POST /analyze        — Gemini Flash job fit analysis
+ *   POST /analyze        — Groq (Llama 3.3) job fit analysis
  *   POST /contact        — Contact form → D1 leads table
  *   GET  /leads          — Admin: list all leads
  *   PATCH /leads/:id     — Admin: update status/notes
  *   POST /track          — Analytics event tracking → KV
  *   GET  /analytics      — Admin: get analytics summary
- * 
+ *
  * Secrets required (set via Cloudflare dashboard → Worker → Settings → Variables):
- *   GEMINI_API_KEY       — from aistudio.google.com
- *   ADMIN_KEY            — your chosen admin password
- *   ALLOWED_ORIGIN       — https://joshuawerlein.com (after deploy)
- * 
+ *   GROQ_API_KEY          — from console.groq.com
+ *   RESEND_API_KEY        — from resend.com
+ *   ADMIN_KEY             — your chosen admin password
+ *   ALLOWED_ORIGIN         — https://joshuawerlein.com (after deploy)
+ *
  * Bindings required:
  *   DB                   — D1 database named: portfolio_db
  *   ANALYTICS            — KV namespace named: PORTFOLIO_ANALYTICS
- * 
+ *
  * D1 Migration (run once in D1 console):
  *   CREATE TABLE IF NOT EXISTS leads (
  *     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -30,18 +31,18 @@
  *     created_at TEXT DEFAULT (datetime('now'))
  *   );
  */
- 
+
 const PROFILE = `
 Joshua Werlein is a full stack software engineer based in Mondovi, WI, available for remote work immediately.
- 
+
 EDUCATION:
 - B.S. Software Engineering, Western Governors University (2025)
 - A.A.S. IT Software Developer, Chippewa Valley Technical College (2024)
- 
+
 CERTIFICATIONS:
 - AWS Certified Cloud Practitioner (2025)
 - CompTIA Project+ (2024)
- 
+
 TECHNICAL SKILLS:
 Languages: TypeScript, JavaScript, Java, SQL, C#
 Android: Android SDK, Room Database, Jetpack Components, ZXing barcode scanning, Biometric auth
@@ -70,131 +71,214 @@ PRODUCTION EXPERIENCE:
    - Offline-first Room DB, ZXing barcode scanning, Open Food Facts API, AlarmManager notifications
    - Play Store: com.bestbymanager.app
 `
- 
-// ── CORS helpers ──────────────────────────────────────────────────────────────
- 
+
+// ── HTML escape ───────────────────────────────────────────────────────────────
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;')
+}
+
+// ── CORS ──────────────────────────────────────────────────────────────────────
 function corsHeaders(origin, allowedOrigin) {
-  const allowed = allowedOrigin || '*'
-  const isAllowed = allowed === '*' || origin === allowed
+  // Never fall back to * — require explicit ALLOWED_ORIGIN secret
+  const allowed = allowedOrigin
+  const isAllowed = origin === allowed
   return {
-    'Access-Control-Allow-Origin': isAllowed ? (origin || '*') : allowed,
+    'Access-Control-Allow-Origin': isAllowed ? origin : 'null',
     'Access-Control-Allow-Methods': 'GET, POST, PATCH, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type, x-admin-key',
     'Access-Control-Max-Age': '86400',
   }
 }
- 
-function json(data, status = 200, extraHeaders = {}) {
+
+function json(data, status = 200) {
   return new Response(JSON.stringify(data), {
     status,
-    headers: { 'Content-Type': 'application/json', ...extraHeaders },
+    headers: { 'Content-Type': 'application/json' },
   })
 }
- 
+
 function withCors(response, cors) {
   const headers = new Headers(response.headers)
   Object.entries(cors).forEach(([k, v]) => headers.set(k, v))
   return new Response(response.body, { status: response.status, headers })
 }
- 
-// ── Auth helper ───────────────────────────────────────────────────────────────
- 
+
 function isAdmin(request, env) {
-  const key = request.headers.get('x-admin-key')
-  return key === env.ADMIN_KEY
+  return request.headers.get('x-admin-key') === env.ADMIN_KEY
 }
- 
+
+// ── Rate limiter (IP-based, KV-backed) ───────────────────────────────────────
+const RATE_LIMIT     = 5    // max requests
+const RATE_WINDOW_MS = 10 * 60 * 1000  // per 10 minutes
+
+async function checkRateLimit(env, ip, route) {
+  const key   = `rl:${route}:${ip}`
+  const now   = Date.now()
+  let record  = { count: 0, windowStart: now }
+
+  try {
+    const raw = await env.ANALYTICS.get(key)
+    if (raw) {
+      const parsed = JSON.parse(raw)
+      if (now - parsed.windowStart < RATE_WINDOW_MS) {
+        record = parsed
+      }
+    }
+  } catch { /* treat as fresh window */ }
+
+  record.count += 1
+
+  try {
+    await env.ANALYTICS.put(key, JSON.stringify(record), {
+      expirationTtl: Math.ceil(RATE_WINDOW_MS / 1000) + 60,
+    })
+  } catch { /* non-critical */ }
+
+  return record.count > RATE_LIMIT
+}
+
+// ── Input validation ──────────────────────────────────────────────────────────
+function validateContact({ name, email, subject, message }) {
+  const n = name?.trim()
+  const e = email?.trim()
+  const s = subject?.trim()
+  const m = message?.trim()
+  if (!n)              return 'Name is required'
+  if (n.length > 100)  return 'Name too long'
+  if (!e)              return 'Email is required'
+  if (e.length > 254)  return 'Email too long'
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)) return 'Invalid email'
+  if (s && s.length > 200) return 'Subject too long'
+  if (!m)              return 'Message is required'
+  if (m.length > 2000) return 'Message too long (max 2000 chars)'
+  return null
+}
+
 // ── Main handler ──────────────────────────────────────────────────────────────
- 
 export default {
   async fetch(request, env) {
     const origin = request.headers.get('Origin') || ''
-    const cors = corsHeaders(origin, env.ALLOWED_ORIGIN)
- 
-    // Preflight
+    const cors   = corsHeaders(origin, env.ALLOWED_ORIGIN)
+
     if (request.method === 'OPTIONS') {
       return new Response(null, { status: 204, headers: cors })
     }
- 
-    const url = new URL(request.url)
-    const path = url.pathname
- 
+
+    // Request size limit — read body once, enforce hard cap, re-parse as JSON
+    let bodyText
     try {
-      // ── POST /analyze ──────────────────────────────────────────────────────
+      bodyText = await request.text()
+    } catch {
+      return withCors(json({ error: 'Failed to read request body' }, 400), cors)
+    }
+
+    if (bodyText.length > 10000) {
+      return withCors(json({ error: 'Request too large' }, 413), cors)
+    }
+
+    const parseBody = () => {
+      try { return JSON.parse(bodyText) } catch { return null }
+    }
+
+    const url  = new URL(request.url)
+    const path = url.pathname
+
+    try {
+      // ── POST /analyze ────────────────────────────────────────────────────
       if (path === '/analyze' && request.method === 'POST') {
-        const { jobDescription } = await request.json()
- 
+        const body = parseBody()
+        const { jobDescription } = body || {}
+
         if (!jobDescription || jobDescription.trim().length < 50) {
           return withCors(json({ error: 'Job description too short' }, 400), cors)
         }
- 
-        const prompt = `You are analyzing job fit for a specific candidate. Respond ONLY with valid JSON — no markdown, no backticks, no preamble.
- 
+
+        if (jobDescription.length > 8000) {
+          return withCors(json({ error: 'Job description too long' }, 400), cors)
+        }
+
+        const prompt = `You are analyzing job fit for a specific candidate. Return ONLY valid JSON, no markdown, no backticks.
+
 CANDIDATE PROFILE:
 ${PROFILE}
- 
+
 JOB DESCRIPTION:
 ${jobDescription}
- 
-Analyze how well this candidate matches the job. Return this exact JSON structure:
+
+Return a JSON object with exactly these fields:
 {
   "score": <integer 0-100>,
   "summary": "<one sentence overall assessment>",
   "strengths": ["<strength 1>", "<strength 2>", "<strength 3>"],
-  "gaps": ["<gap or thing to highlight 1>", "<gap 2>"],
-  "recommendation": "<2-3 sentence actionable recommendation for the hiring manager or recruiter>"
+  "gaps": ["<gap 1>", "<gap 2>"],
+  "recommendation": "<2-3 sentence recommendation for the hiring manager>"
 }`
- 
-        const geminiRes = await fetch(
-          `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${env.GEMINI_API_KEY}`,
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              contents: [{ parts: [{ text: prompt }] }],
-              generationConfig: { temperature: 0.3, maxOutputTokens: 800 },
-            }),
-          }
-        )
- 
-        if (!geminiRes.ok) {
-          const err = await geminiRes.text()
-          console.error('Gemini error:', err)
-          return withCors(json({ error: 'AI service error' }, 502), cors)
+
+        const groqRes = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${env.GROQ_API_KEY}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            model: 'llama-3.3-70b-versatile',
+            messages: [
+              { role: 'system', content: 'You are a job fit analyzer. Always respond with valid JSON only — no markdown, no backticks, no explanation.' },
+              { role: 'user', content: prompt },
+            ],
+            temperature: 0.3,
+            max_tokens: 1500,
+          }),
+        })
+
+        if (!groqRes.ok) {
+          const errText = await groqRes.text()
+          console.error(`Groq ${groqRes.status}:`, errText)
+          return withCors(json({ error: 'AI service error', status: groqRes.status }, groqRes.status), cors)
         }
- 
-        const geminiData = await geminiRes.json()
-        const rawText = geminiData?.candidates?.[0]?.content?.parts?.[0]?.text || ''
-        const cleaned = rawText.replace(/```json|```/g, '').trim()
- 
+
+        const groqData = await groqRes.json()
+        const rawText  = groqData?.choices?.[0]?.message?.content || ''
+        const jsonMatch = rawText.match(/\{[\s\S]*\}/)
+        const cleaned   = jsonMatch ? jsonMatch[0] : rawText
+
         let result
         try {
           result = JSON.parse(cleaned)
         } catch {
+          console.error('Groq parse error, raw:', rawText)
           return withCors(json({ error: 'Failed to parse AI response' }, 500), cors)
         }
- 
-        // Track usage in KV
+
         try {
           const current = await env.ANALYTICS.get('analyze_count')
           await env.ANALYTICS.put('analyze_count', String((parseInt(current) || 0) + 1))
         } catch { /* non-critical */ }
- 
+
         return withCors(json(result), cors)
       }
- 
-      // ── POST /contact ──────────────────────────────────────────────────────
+
+      // ── POST /contact ────────────────────────────────────────────────────
       if (path === '/contact' && request.method === 'POST') {
-        const { name, email, subject, message } = await request.json()
- 
-        if (!name?.trim() || !email?.trim() || !message?.trim()) {
-          return withCors(json({ error: 'Missing required fields' }, 400), cors)
+        // Rate limit by IP
+        const ip        = request.headers.get('CF-Connecting-IP') || 'unknown'
+        const rateLimited = await checkRateLimit(env, ip, 'contact')
+        if (rateLimited) {
+          return withCors(json({ error: 'Too many requests. Please wait a few minutes.' }, 429), cors)
         }
- 
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-          return withCors(json({ error: 'Invalid email' }, 400), cors)
+
+        const { name, email, subject, message } = parseBody() || {}
+
+        const validationError = validateContact({ name, email, subject, message })
+        if (validationError) {
+          return withCors(json({ error: validationError }, 400), cors)
         }
- 
+
         // Save to D1
         await env.DB.prepare(
           `INSERT INTO leads (name, email, subject, message, status, notes)
@@ -205,124 +289,161 @@ Analyze how well this candidate matches the job. Return this exact JSON structur
           subject?.trim() || '',
           message.trim()
         ).run()
- 
+
         // Track submission count
         try {
           const current = await env.ANALYTICS.get('contact_submissions')
           await env.ANALYTICS.put('contact_submissions', String((parseInt(current) || 0) + 1))
         } catch { /* non-critical */ }
- 
-        // TODO: Add Resend email notification here once RESEND_API_KEY secret is added
-        // Example:
-        // await fetch('https://api.resend.com/emails', {
-        //   method: 'POST',
-        //   headers: { 'Authorization': `Bearer ${env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
-        //   body: JSON.stringify({
-        //     from: 'portfolio@joshuawerlein.com',
-        //     to: 'jjwerlein@gmail.com',
-        //     subject: `Portfolio contact: ${subject || 'New message'} from ${name}`,
-        //     text: `From: ${name} <${email}>\n\n${message}`,
-        //   }),
-        // })
- 
+
+        // Send email via Resend (HTML-escaped user content)
+        try {
+          const safeName    = escapeHtml(name.trim())
+          const safeEmail   = escapeHtml(email.trim())
+          const safeSubject = escapeHtml(subject?.trim() || '(none)')
+          const safeMessage = escapeHtml(message.trim()).replace(/\n/g, '<br>')
+
+          await fetch('https://api.resend.com/emails', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${env.RESEND_API_KEY}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              from: 'portfolio@joshuawerlein.com',
+              to: 'jjwerlein@gmail.com',
+              subject: `Portfolio contact: ${subject?.trim() || 'New message'} from ${name.trim()}`,
+              text: `New contact from joshuawerlein.com\n\nName: ${name.trim()}\nEmail: ${email.trim()}\nSubject: ${subject?.trim() || '(none)'}\n\nMessage:\n${message.trim()}`,
+              html: `
+                <div style="font-family:sans-serif;max-width:600px;margin:0 auto;">
+                  <h2 style="color:#00e5ff;border-bottom:2px solid #00e5ff;padding-bottom:8px;">
+                    New Portfolio Contact
+                  </h2>
+                  <table style="width:100%;border-collapse:collapse;">
+                    <tr>
+                      <td style="padding:8px 0;color:#888;width:80px;"><strong>Name</strong></td>
+                      <td style="padding:8px 0;">${safeName}</td>
+                    </tr>
+                    <tr>
+                      <td style="padding:8px 0;color:#888;"><strong>Email</strong></td>
+                      <td style="padding:8px 0;"><a href="mailto:${safeEmail}">${safeEmail}</a></td>
+                    </tr>
+                    <tr>
+                      <td style="padding:8px 0;color:#888;"><strong>Subject</strong></td>
+                      <td style="padding:8px 0;">${safeSubject}</td>
+                    </tr>
+                  </table>
+                  <div style="margin-top:24px;padding:16px;background:#f5f5f5;border-radius:8px;border-left:4px solid #00e5ff;">
+                    <strong style="color:#888;">Message:</strong>
+                    <p style="margin:8px 0 0;">${safeMessage}</p>
+                  </div>
+                  <p style="margin-top:24px;color:#aaa;font-size:12px;">
+                    Sent from joshuawerlein.com
+                  </p>
+                </div>
+              `,
+            }),
+          })
+        } catch (emailErr) {
+          console.error('Resend error:', emailErr)
+          // Lead already saved — don't fail the request
+        }
+
         return withCors(json({ success: true }), cors)
       }
- 
-      // ── GET /leads ─────────────────────────────────────────────────────────
+
+      // ── GET /leads ───────────────────────────────────────────────────────
       if (path === '/leads' && request.method === 'GET') {
         if (!isAdmin(request, env)) {
           return withCors(json({ error: 'Unauthorized' }, 401), cors)
         }
- 
         const result = await env.DB.prepare(
           `SELECT * FROM leads ORDER BY created_at DESC`
         ).all()
- 
         return withCors(json({ leads: result.results }), cors)
       }
- 
-      // ── PATCH /leads/:id ───────────────────────────────────────────────────
+
+      // ── PATCH /leads/:id ─────────────────────────────────────────────────
       const leadMatch = path.match(/^\/leads\/(\d+)$/)
       if (leadMatch && request.method === 'PATCH') {
         if (!isAdmin(request, env)) {
           return withCors(json({ error: 'Unauthorized' }, 401), cors)
         }
- 
-        const id = parseInt(leadMatch[1])
-        const body = await request.json()
+        const id      = parseInt(leadMatch[1])
+        const body    = parseBody() || {}
         const updates = []
-        const values = []
- 
+        const values  = []
+
         if (body.status !== undefined) { updates.push('status = ?'); values.push(body.status) }
-        if (body.notes !== undefined)  { updates.push('notes = ?');  values.push(body.notes) }
- 
+        if (body.notes  !== undefined) { updates.push('notes = ?');  values.push(body.notes)  }
+
         if (updates.length === 0) {
           return withCors(json({ error: 'Nothing to update' }, 400), cors)
         }
- 
+
         values.push(id)
         await env.DB.prepare(
           `UPDATE leads SET ${updates.join(', ')} WHERE id = ?`
         ).bind(...values).run()
- 
+
         return withCors(json({ success: true }), cors)
       }
- 
-      // ── POST /track ────────────────────────────────────────────────────────
+
+      // ── POST /track ──────────────────────────────────────────────────────
       if (path === '/track' && request.method === 'POST') {
-        const { event, project } = await request.json()
- 
+        const { event, project } = parseBody() || {}
         try {
           if (event === 'resume_download') {
             const current = await env.ANALYTICS.get('resume_downloads')
             await env.ANALYTICS.put('resume_downloads', String((parseInt(current) || 0) + 1))
           }
- 
           if (event === 'project_click' && project) {
-            const key = `project_click_${project}`
+            const key     = `project_click_${project}`
             const current = await env.ANALYTICS.get(key)
             await env.ANALYTICS.put(key, String((parseInt(current) || 0) + 1))
           }
         } catch { /* non-critical */ }
- 
         return withCors(json({ ok: true }), cors)
       }
- 
-      // ── GET /analytics ─────────────────────────────────────────────────────
+
+      // ── GET /analytics ───────────────────────────────────────────────────
       if (path === '/analytics' && request.method === 'GET') {
         if (!isAdmin(request, env)) {
           return withCors(json({ error: 'Unauthorized' }, 401), cors)
         }
- 
+
         const [resumeDownloads, contactSubmissions, analyzeCount] = await Promise.all([
           env.ANALYTICS.get('resume_downloads'),
           env.ANALYTICS.get('contact_submissions'),
           env.ANALYTICS.get('analyze_count'),
         ])
- 
+
         const projectIds = ['bestby', 'kilcon', 'lakehenry']
         const clickCounts = await Promise.all(
           projectIds.map(id => env.ANALYTICS.get(`project_click_${id}`))
         )
- 
+
+        const labels = {
+          bestby:    'Best By Manager',
+          kilcon:    'KIL Construction',
+          lakehenry: 'Friends of Lake Henry',
+        }
         const projectClicks = {}
         projectIds.forEach((id, i) => {
-          const labels = { bestby: 'Best By Manager', kilcon: 'KIL Construction', lakehenry: 'Friends of Lake Henry' }
           projectClicks[labels[id]] = parseInt(clickCounts[i]) || 0
         })
- 
+
         return withCors(json({
-          resume_downloads:     parseInt(resumeDownloads) || 0,
+          resume_downloads:     parseInt(resumeDownloads)    || 0,
           contact_submissions:  parseInt(contactSubmissions) || 0,
-          analyze_count:        parseInt(analyzeCount) || 0,
+          analyze_count:        parseInt(analyzeCount)       || 0,
           total_project_clicks: Object.values(projectClicks).reduce((a, b) => a + b, 0),
           project_clicks:       projectClicks,
         }), cors)
       }
- 
-      // ── 404 ────────────────────────────────────────────────────────────────
+
       return withCors(json({ error: 'Not found' }, 404), cors)
- 
+
     } catch (err) {
       console.error('Worker error:', err)
       return withCors(json({ error: 'Internal server error' }, 500), cors)
