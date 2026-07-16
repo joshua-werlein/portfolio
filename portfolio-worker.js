@@ -43,22 +43,27 @@ CERTIFICATIONS:
 - CompTIA Project+ (2024)
  
 TECHNICAL SKILLS:
-Languages: Java, JavaScript, SQL, C#
+Languages: TypeScript, JavaScript, Java, SQL, C#
 Android: Android SDK, Room Database, Jetpack Components, ZXing barcode scanning, Biometric auth
-Web/Serverless: Cloudflare Workers, Cloudflare R2, Astro, REST APIs, Signed sessions
+Web/Serverless: Cloudflare Workers, Cloudflare R2, Astro, React, Node.js, REST APIs, Signed sessions
 Cloud/DevOps: AWS, Cloudflare Pages, GitHub, CI/CD, MySQL
 Security: Turnstile CAPTCHA, Rate limiting, Signed cookie sessions, bcrypt
-Currently Learning: React, Node.js, TypeScript
- 
+
 PRODUCTION EXPERIENCE:
- 
-1. Freelance Software Engineer (2025) — KIL Construction & Friends of Lake Henry
+
+1. Full Stack Developer (Contract, 2026) — Arkham Enterprises (Apex Solar & Construction)
+   - Built and deployed a multi-page marketing/lead-gen site in React (React Router, Framer Motion)
+   - Custom Cloudflare Workers backend handling contact and quote-request forms via the Resend API
+   - Owned the project end-to-end: component architecture, theming, SEO (react-helmet-async), spam-protected lead forms
+   - Live site: arkhamsolar.com
+
+2. Freelance Software Engineer (2025) — KIL Construction & Friends of Lake Henry
    - Designed and shipped serverless production platforms using Cloudflare Workers, R2, and Astro
    - Implemented signed cookie sessions, Turnstile CAPTCHA, and IP rate limiting
    - Built full media workflow admin tooling for non-technical clients
    - Live sites: kilcon.work, friendsoflakehenry.com
- 
-2. Android Engineer — Best By Manager (2025)
+
+3. Android Engineer — Best By Manager (2025)
    - Shipped kiosk-style inventory app to Google Play (production)
    - Full release lifecycle from closed beta through v2.0.0
    - Three-tier permission model (Owner/Admin/Employee) with bcrypt + biometrics

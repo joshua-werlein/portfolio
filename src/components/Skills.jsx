@@ -5,6 +5,7 @@ const SKILL_GROUPS = [
     skills: [
       { name: 'Java', level: 3 },
       { name: 'JavaScript', level: 3 },
+      { name: 'TypeScript', level: 3 },
       { name: 'SQL', level: 3 },
       { name: 'C#', level: 2 },
     ],
@@ -27,6 +28,8 @@ const SKILL_GROUPS = [
       { name: 'Cloudflare Workers', level: 3 },
       { name: 'Cloudflare R2', level: 3 },
       { name: 'Astro', level: 3 },
+      { name: 'React', level: 3 },
+      { name: 'Node.js', level: 2 },
       { name: 'REST APIs', level: 3 },
       { name: 'Auth / Sessions', level: 2 },
     ],
@@ -50,16 +53,6 @@ const SKILL_GROUPS = [
       { name: 'Rate Limiting', level: 3 },
       { name: 'Signed Sessions', level: 3 },
       { name: 'bcrypt', level: 2 },
-    ],
-  },
-  {
-    category: 'Currently Learning',
-    icon: '⚡',
-    learning: true,
-    skills: [
-      { name: 'React', level: 1 },
-      { name: 'Node.js', level: 1 },
-      { name: 'TypeScript', level: 1 },
     ],
   },
 ]
