@@ -69,7 +69,7 @@ const PROJECTS = [
       { label: 'GitHub', url: 'https://github.com/joshua-werlein/friends-of-lake-henry', primary: false },
     ],
     type: 'Web Platform',
-    typeColor: '#0070cc',
+    typeColor: '#3b9eff',
   },
   {
     id: 'arkham',

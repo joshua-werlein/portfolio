@@ -85,7 +85,7 @@ export default function App() {
           <ul className="nav-links">
             {navLinks.map(l => (
               <li key={l.id}>
-                <a onClick={() => scrollTo(l.id)} style={{ cursor: 'pointer' }}>
+                <a href={`#${l.id}`} onClick={(e) => { e.preventDefault(); scrollTo(l.id); }}>
                   {l.label}
                 </a>
               </li>

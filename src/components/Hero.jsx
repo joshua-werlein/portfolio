@@ -174,7 +174,7 @@ export default function Hero({ onScrollTo }) {
           }}
           onClick={() => onScrollTo('about')}
         >
-          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.7rem', letterSpacing: '0.1em', color: 'var(--text-3)' }}>SCROLL</span>
+          <span aria-hidden="true" style={{ fontFamily: 'var(--font-mono)', fontSize: '0.7rem', letterSpacing: '0.1em', color: 'var(--text-3)' }}>SCROLL</span>
           <div style={{ width: 1, height: 40, background: 'var(--text-3)', position: 'relative', overflow: 'hidden' }}>
             <div style={{
               position: 'absolute',
