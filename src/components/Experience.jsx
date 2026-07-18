@@ -124,7 +124,7 @@ export default function Experience() {
                       <span className="tag">{exp.period}</span>
                       <span style={{
                         background: 'rgba(0,255,136,0.12)',
-                        color: 'var(--green)',
+                        color: 'var(--tag-green)',
                         border: '1px solid rgba(0,255,136,0.2)',
                         borderRadius: 100,
                         padding: '2px 10px',
