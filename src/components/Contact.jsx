@@ -160,6 +160,7 @@ export default function Contact() {
                   Thanks for reaching out. I'll get back to you within one business day.
                 </p>
                 <button
+                  type="button"
                   className="btn btn-outline"
                   onClick={() => setStatus(null)}
                 >
