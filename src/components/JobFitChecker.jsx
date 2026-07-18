@@ -101,9 +101,9 @@ export default function JobFitChecker() {
             {/* Textarea */}
             <textarea
               id="jobfit-textarea"
-+             name="jobDescription"
-+             autoComplete="off"
-+             aria-labelledby="jobfit-label"
+              name="jobDescription"
+              autoComplete="off"
+              aria-labelledby="jobfit-label"
               value={jobText}
               onChange={e => { setJobText(e.target.value); setError(null) }}
               placeholder={PLACEHOLDER}
