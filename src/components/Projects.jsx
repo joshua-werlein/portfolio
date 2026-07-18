@@ -24,6 +24,7 @@ const PROJECTS = [
     ],
     type: 'Android App',
     typeColor: '#34A853',
+    typeColorText: 'var(--tag-green)',
   },
   {
     id: 'kilcon',
@@ -47,6 +48,7 @@ const PROJECTS = [
     ],
     type: 'Web Platform',
     typeColor: '#F6821F',
+    typeColorText: 'var(--tag-orange)',
   },
   {
     id: 'lakehenry',
@@ -70,6 +72,7 @@ const PROJECTS = [
     ],
     type: 'Web Platform',
     typeColor: '#3b9eff',
+    typeColorText: 'var(--tag-blue)',
   },
   {
     id: 'arkham',
@@ -92,6 +95,7 @@ const PROJECTS = [
     ],
     type: 'Web Platform',
     typeColor: '#F4A100',
+    typeColorText: 'var(--tag-yellow)',
   },
 ]
  
@@ -142,7 +146,7 @@ export default function Projects() {
                   <span style={{
                     fontFamily: 'var(--font-mono)',
                     fontSize: '0.7rem',
-                    color: project.typeColor,
+                    color: project.typeColorText,
                     background: `${project.typeColor}18`,
                     border: `1px solid ${project.typeColor}30`,
                     borderRadius: 100,
