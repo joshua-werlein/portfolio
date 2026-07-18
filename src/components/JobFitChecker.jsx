@@ -81,7 +81,7 @@ export default function JobFitChecker() {
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                 <span style={{ fontSize: '1.1rem' }}>🤖</span>
-                <span style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '0.95rem' }}>
+                <span id="jobfit-label" style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '0.95rem' }}>
                   Job Description
                 </span>
               </div>
@@ -100,6 +100,10 @@ export default function JobFitChecker() {
  
             {/* Textarea */}
             <textarea
+              id="jobfit-textarea"
++             name="jobDescription"
++             autoComplete="off"
++             aria-labelledby="jobfit-label"
               value={jobText}
               onChange={e => { setJobText(e.target.value); setError(null) }}
               placeholder={PLACEHOLDER}
@@ -133,6 +137,7 @@ export default function JobFitChecker() {
               <div style={{ display: 'flex', gap: 8 }}>
                 {jobText && (
                   <button
+                    type="button"
                     className="btn btn-ghost"
                     style={{ fontSize: '0.78rem', padding: '7px 12px' }}
                     onClick={() => { setJobText(''); setResult(null); setError(null) }}
