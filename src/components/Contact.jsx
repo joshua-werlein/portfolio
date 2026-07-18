@@ -167,11 +167,18 @@ export default function Contact() {
                 </button>
               </div>
             ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+              <form
+                noValidate
+                onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}
+                style={{ display: 'flex', flexDirection: 'column', gap: 18 }}
+              >
                 {/* Name + Email row */}
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }} className="form-row">
                   <Field
                     label="Name"
+                    name="name"
+                    autoComplete="name"
+                    required
                     value={form.name}
                     onChange={set('name')}
                     placeholder="Your name"
@@ -179,7 +186,10 @@ export default function Contact() {
                   />
                   <Field
                     label="Email"
+                    name="email"
                     type="email"
+                    autoComplete="email"
+                    required
                     value={form.email}
                     onChange={set('email')}
                     placeholder="your@email.com"
@@ -189,6 +199,8 @@ export default function Contact() {
  
                 <Field
                   label="Subject"
+                  name="subject"
+                  autoComplete="off"
                   value={form.subject}
                   onChange={set('subject')}
                   placeholder="What's this about? (optional)"
@@ -196,10 +208,13 @@ export default function Contact() {
  
                 <Field
                   label="Message"
+                  name="message"
+                  autoComplete="off"
+                  multiline
+                  required
                   value={form.message}
                   onChange={set('message')}
                   placeholder="Tell me about the role, project, or whatever's on your mind..."
-                  multiline
                   error={errors.message}
                 />
  
@@ -217,9 +232,9 @@ export default function Contact() {
                 )}
  
                 <button
+                  type="submit"
                   className="btn btn-primary"
                   style={{ width: '100%', justifyContent: 'center', padding: '12px', fontSize: '0.9rem' }}
-                  onClick={handleSubmit}
                   disabled={status === 'sending'}
                 >
                   {status === 'sending' ? (
@@ -240,7 +255,7 @@ export default function Contact() {
                 <p style={{ textAlign: 'center', fontSize: '0.75rem', color: 'var(--text-3)', fontFamily: 'var(--font-mono)' }}>
                   I'll respond within 1 business day.
                 </p>
-              </div>
+              </form>
             )}
           </div>
         </div>
@@ -256,7 +271,9 @@ export default function Contact() {
   )
 }
  
-function Field({ label, value, onChange, placeholder, type = 'text', multiline, error }) {
+function Field({ label, value, onChange, placeholder, type = 'text', multiline, error, name, id, autoComplete, required }) {
+  const fieldId = id || `contact-${name || label.toLowerCase()}`;
+  const errorId = `${fieldId}-error`;
   const base = {
     width: '100%',
     padding: '10px 14px',
@@ -272,7 +289,7 @@ function Field({ label, value, onChange, placeholder, type = 'text', multiline, 
  
   return (
     <div>
-      <label style={{
+      <label htmlFor={fieldId} style={{
         display: 'block',
         fontFamily: 'var(--font-mono)',
         fontSize: '0.7rem',
@@ -285,6 +302,12 @@ function Field({ label, value, onChange, placeholder, type = 'text', multiline, 
       </label>
       {multiline ? (
         <textarea
+          id={fieldId}
+          name={name}
+          autoComplete={autoComplete}
+          required={required}
+          aria-invalid={!!error}
+          aria-describedby={error ? errorId : undefined}
           value={value}
           onChange={onChange}
           placeholder={placeholder}
@@ -295,6 +318,12 @@ function Field({ label, value, onChange, placeholder, type = 'text', multiline, 
         />
       ) : (
         <input
+          id={fieldId}
+          name={name}
+          autoComplete={autoComplete}
+          required={required}
+          aria-invalid={!!error}
+          aria-describedby={error ? errorId : undefined}
           type={type}
           value={value}
           onChange={onChange}
@@ -305,7 +334,7 @@ function Field({ label, value, onChange, placeholder, type = 'text', multiline, 
         />
       )}
       {error && (
-        <span style={{ fontSize: '0.75rem', color: 'var(--orange)', marginTop: 4, display: 'block' }}>
+        <span id={errorId} role="alert" style={{ fontSize: '0.75rem', color: 'var(--orange)', marginTop: 4, display: 'block' }}>
           {error}
         </span>
       )}
