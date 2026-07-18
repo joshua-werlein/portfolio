@@ -25,6 +25,30 @@
   --shadow:      0 4px 24px rgba(0,0,0,0.4);
   --shadow-lg:   0 8px 48px rgba(0,0,0,0.6);
   --transition:  0.2s ease;
+
+  --tag-android:      #34A853;
+  --tag-web:           #F6821F;
+  --tag-nonprofit:     #3b9eff;
+  --tag-marketing:     #F4A100;
+  --tag-java:          #ED8B00;
+  --tag-cloudflare:    #F6821F;
+  --tag-astro:         #FFFA65;
+  --tag-react:         #61DAFB;
+  --tag-javascript:    #F7DF1E;
+  --tag-r2:            #F6821F;
+  --tag-turnstile:     #F6821F;
+  --tag-serverless:    #F6821F;
+  --tag-accessibility: #8B5CF6;
+  --tag-roomdb:        #34A853;
+  --tag-jetpack:       #34A853;
+  --tag-zxing:         #34A853;
+  --tag-biometrics:    #34A853;
+  --tag-googleplay:    #34A853;
+  --tag-resend:        #000000;
+  --tag-green:   #34A853;
+  --tag-orange:  #F6821F;
+  --tag-yellow:  #F4A100;
+  --tag-blue:    #3b9eff;
 }
 
 [data-theme="light"] {
@@ -35,14 +59,18 @@
   --surface-2:   #f0f0f6;
   --border:      rgba(0,0,0,0.08);
   --border-2:    rgba(0,0,0,0.14);
-  --accent:      #0070cc;
-  --accent-dim:  rgba(0,112,204,0.1);
-  --accent-glow: rgba(0,112,204,0.2);
+   --accent:      #005fb0;
+   --accent-dim:  rgba(0,95,176,0.1);
+   --accent-glow: rgba(0,95,176,0.2);
   --text:        #111118;
   --text-2:      #44445a;
-  --text-3:      #8888a0;
+  --text-3:      #656579;
   --shadow:      0 4px 24px rgba(0,0,0,0.08);
   --shadow-lg:   0 8px 48px rgba(0,0,0,0.14);
+  --tag-green:   #207033;
+  --tag-orange:  #a05208;
+  --tag-yellow:  #996300;
+  --tag-blue:    #0059a3;
 }
 
 /* ── Reset ────────────────────────────────────────── */
@@ -183,6 +211,7 @@ section {
   color: var(--text);
   letter-spacing: -0.02em;
   cursor: pointer;
+  -webkit-user-select: none;
   user-select: none;
   transition: color var(--transition);
 }
@@ -257,6 +286,11 @@ section {
   color: #000;
 }
 
+[data-theme="light"] .btn-primary,
+[data-theme="light"] .btn-primary:hover {
+  color: #ffffff;
+}
+
 .btn-outline {
   background: transparent;
   color: var(--text);
@@ -316,7 +350,7 @@ section {
 .tag-accent {
   background: var(--accent-dim);
   color: var(--accent);
-  border-color: rgba(0,229,255,0.2);
+  border-color: var(--accent-glow);
 }
 
 /* ── Animations ───────────────────────────────────── */
