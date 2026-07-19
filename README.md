@@ -1,16 +1,37 @@
-# React + Vite
+# joshuawerlein.com
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Personal portfolio for Joshua Werlein, full stack software engineer in west central Wisconsin. Live at [joshuawerlein.com](https://joshuawerlein.com).
 
-Currently, two official plugins are available:
+## What it is
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+A single-page React app presenting client work, shipped projects, and contact info:
 
-## React Compiler
+- **Experience**: contract work for Arkham Enterprises (arkhamsolar.com), KIL Construction (kilcon.work), Friends of Lake Henry (friendsoflakehenry.com), and Blair Sportsmen's Club (blairsportsmensclub.com)
+- **Projects**: production deployments with real users, including Best By Manager on Google Play
+- **llms.txt** at the site root for AI agent discoverability
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Stack
 
-## Expanding the ESLint configuration
+- React 19 + Vite
+- Cloudflare Worker (`portfolio-worker.js`) serving the built assets at the edge
+- Plain CSS, no UI framework
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Development
+
+```bash
+npm install
+npm run dev      # local dev server
+npm run build    # production build to dist/
+```
+
+Deployed via Cloudflare Workers with static assets. Pushes to `main` deploy automatically.
+
+## Related repositories
+
+| Project | Repo |
+|---|---|
+| Best By Manager (Android) | [BestByManager](https://github.com/joshua-werlein/BestByManager) |
+| KIL Construction | [kilConstruction](https://github.com/joshua-werlein/kilConstruction) |
+| Friends of Lake Henry | [friends-of-lake-henry](https://github.com/joshua-werlein/friends-of-lake-henry) |
+| Arkham Enterprises | [arkham-solar](https://github.com/joshua-werlein/arkham-solar) |
+
