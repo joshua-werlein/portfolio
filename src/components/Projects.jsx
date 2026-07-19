@@ -97,6 +97,28 @@ const PROJECTS = [
     typeColor: '#F4A100',
     typeColorText: 'var(--tag-yellow)',
   },
+  {
+    id: 'blair',
+    name: "Blair Sportsmen's Club",
+    tagline: 'Event & reservation platform for a recreational club',
+    impact: 'Live production site — real barn reservations flow through the availability calendar and contact pipeline',
+    description:
+      "An event and reservation platform for a nonprofit sportsmen's club established in 1968. A live availability calendar drives barn reservation requests, trap league scores render in deep-linkable leaderboards, and the contact pipeline delivers email via Resend.",
+    architecture: [
+      'Live availability calendar with reserved, booked, and event states rendered from a Workers API',
+      'Calendar-to-form prefill: selecting an open date populates the reservation request with date, reason, and message',
+      'Trap league leaderboards with per-event round breakdowns in a two-state modal with #trap-scores hash routing',
+      'Turnstile-protected contact form delivering via Resend, with reason-based routing (reservations, memberships, questions)',
+      'Google Maps directions integration and CLS-safe space reservation for all JS-rendered content',
+    ],
+    tags: ['Cloudflare Workers', 'Astro', 'JavaScript', 'Turnstile', 'Resend', 'Serverless'],
+    links: [
+      { label: 'blairsportsmensclub.com', url: 'https://blairsportsmensclub.com', primary: true },
+    ],
+    type: 'Web Platform',
+    typeColor: '#2c583d',
+    typeColorText: 'var(--tag-green)',
+  },
 ]
  
 export default function Projects() {
