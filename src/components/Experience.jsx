@@ -2,44 +2,76 @@ import { useState } from 'react'
  
 const EXPERIENCES = [
   {
-    id: 'freelance',
+    id: 'arkham',
     role: 'Software Engineer — Contract',
-    company: 'KIL Construction & Friends of Lake Henry',
+    company: 'Arkham Enterprises (Apex Solar and Construction)',
+    period: '2026',
+    type: 'Freelance · Remote',
+    status: 'live',
+    links: [
+      { label: 'arkhamsolar.com', url: 'https://arkhamsolar.com' },
+    ],
+    bullets: [
+      'Built a marketing and lead-generation platform for a solar and construction company — React SPA served from a Cloudflare Worker with contact and multi-step quote-request forms wired to a Workers backend via Resend.',
+      'Implemented deep-linked quote flows (?type= URL params) so service pages, ads, and AI agents can drop prospects directly into a pre-filled quote form.',
+      'Shipped LocalBusiness JSON-LD structured data, llms.txt agent discoverability, and WCAG AA accessibility — 100 Lighthouse scores across Performance, Accessibility, SEO, and Agentic Browsing.',
+    ],
+    tags: ['React', 'Cloudflare Workers', 'JavaScript', 'Resend', 'JSON-LD', 'Serverless'],
+  },
+  {
+    id: 'kilcon',
+    role: 'Software Engineer — Contract',
+    company: 'KIL Construction',
     period: '2025',
     type: 'Freelance · Remote',
     status: 'live',
     links: [
       { label: 'kilcon.work', url: 'https://kilcon.work' },
+    ],
+    bullets: [
+      'Designed and shipped a serverless content platform on Cloudflare Workers and Astro with signed cookie sessions, Turnstile CAPTCHA, and edge rate limiting — all on Cloudflare\'s free tier.',
+      'Built a full client-review system: public submission, admin moderation with replies and featured reviews, and aggregate rating summaries served through a dedicated Worker API.',
+      'Delivered an R2-backed media pipeline with secure admin tooling for uploading, renaming, and deleting project gallery assets.',
+      'Owned deployments, production fixes, and client feedback loops end-to-end with zero downtime incidents.',
+    ],
+    tags: ['Cloudflare Workers', 'Astro', 'JavaScript', 'R2', 'D1', 'Serverless'],
+  },
+  {
+    id: 'folh',
+    role: 'Software Engineer — Contract',
+    company: 'Friends of Lake Henry',
+    period: '2025',
+    type: 'Freelance · Remote · Nonprofit',
+    status: 'live',
+    links: [
       { label: 'friendsoflakehenry.com', url: 'https://friendsoflakehenry.com' },
     ],
     bullets: [
-      'Designed and shipped serverless production platforms for real clients using signed cookie sessions, Turnstile CAPTCHA, and in-Worker IP rate limiting on Cloudflare\'s free tier.',
-      'Built full-stack content platforms using Cloudflare Workers, R2, and Astro — including project galleries, media workflows, and secure admin tooling for image management.',
-      'Adapted the same platform architecture for a nonprofit organization, delivering donation flows, event listings, and photo workflows while balancing accessibility and non-technical stakeholder needs.',
-      'Owned deployments, production fixes, and client feedback loops end-to-end with zero downtime incidents.',
+      'Built a nonprofit platform with a custom admin CMS as a single integrated Astro + Cloudflare codebase, with API routes and session middleware in-repo rather than KIL Construction\'s separate service-bound Workers',
+      'Built admin backends for events, photo galleries, donor recognition, and raffle management behind signed-session auth middleware, designed for non-technical board members.',
+      'Implemented a community photo submission workflow with admin moderation, backed by Cloudflare R2.',
+      'Balanced WCAG accessibility requirements with a non-technical stakeholder audience across the full content lifecycle.',
     ],
-    tags: ['Cloudflare Workers', 'Astro', 'JavaScript', 'R2', 'CAPTCHA', 'Serverless'],
+    tags: ['Cloudflare Workers', 'Astro', 'JavaScript', 'R2', 'Admin CMS', 'Accessibility'],
   },
   {
-    id: 'bestby',
-    role: 'Android Engineer',
-    company: 'Best By Manager — Production App',
-    period: '2025',
-    type: 'Independent · Google Play',
+    id: 'blair',
+    role: 'Software Engineer — Contract',
+    company: "Blair Sportsmen's Club",
+    period: '2025–2026',
+    type: 'Freelance · Remote · Nonprofit',
     status: 'live',
     links: [
-      { label: 'Google Play', url: 'https://play.google.com/store/apps/details?id=com.bestbymanager.app' },
-      { label: 'GitHub', url: 'https://github.com/joshua-werlein/BestByManager' },
+      { label: 'blairsportsmensclub.com', url: 'https://blairsportsmensclub.com' },
     ],
     bullets: [
-      'Shipped a kiosk-style Android inventory management app to Google Play production — managed the full release lifecycle from closed beta through v2.0.0 launch.',
-      'Architected a three-tier permission model (Owner, Admin, Employee) with PIN-based session management and bcrypt credential storage.',
-      'Built an offline-first Room database with ZXing barcode scanning, Open Food Facts API integration, AlarmManager expiration notifications, and biometric-gated owner controls.',
-      'Maintained and iterated post-launch based on real user feedback, shipping incremental improvements across multiple production releases.',
+      'Built an event and reservation platform for a recreational club — live barn-availability calendar with reserved, booked, and event states rendered from a Workers API.',
+      'Implemented calendar-to-form prefill: selecting an open date populates a reservation request with the chosen date, reason, and message, feeding a Turnstile-protected contact pipeline delivering via Resend.',
+      'Shipped trap-league score leaderboards with per-event round breakdowns in a deep-linkable modal (#trap-scores routing), plus Google Maps directions integration.',
     ],
-    tags: ['Java', 'Android', 'Room DB', 'Jetpack', 'ZXing', 'Biometrics'],
+    tags: ['Cloudflare Workers', 'Astro', 'JavaScript', 'Turnstile', 'Resend', 'Serverless'],
   },
-]
+];
  
 export default function Experience() {
   const [expanded, setExpanded] = useState(null)
