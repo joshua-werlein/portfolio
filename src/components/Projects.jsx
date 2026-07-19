@@ -56,14 +56,14 @@ const PROJECTS = [
     tagline: 'Nonprofit web platform with donations, events & media',
     impact: 'Live production site — same secure architecture adapted for a nonprofit with non-technical stakeholders',
     description:
-      'Adapted the same Cloudflare Workers + Astro platform for a nonprofit lake association. Delivers donation workflows, event listings, and photo galleries while balancing accessibility needs and a non-technical admin audience.',
+      'A ground-up nonprofit platform built with Astro and Cloudflare, with every API route and the session middleware living in a single integrated codebase. A custom admin CMS lets non-technical board members manage events, moderated community photo submissions, donor recognition, and raffles.',
     architecture: [
-      'Forked and adapted from KIL Construction architecture — shared core, divergent UX',
+      'Single integrated codebase: Astro frontend, API routes, and auth middleware deployed together, in contrast to KIL Construction\'s multi-Worker service-binding architecture',
       'Donation workflow with external payment integration and confirmation handling',
       'Event calendar with admin-managed listings via the secure content API',
       'Photo gallery backed by Cloudflare R2 with admin upload/delete workflow',
       'Accessibility-first frontend — designed for non-technical board members to manage content',
-      'Same signed session + Turnstile + rate limiting security stack as KIL Construction',
+      'Signed-session auth, Turnstile, and rate limiting implemented natively in middleware',
     ],
     tags: ['Cloudflare Workers', 'Astro', 'JavaScript', 'R2', 'Nonprofit', 'Accessibility'],
     links: [
