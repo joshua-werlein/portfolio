@@ -23,6 +23,7 @@
  * Bindings required:
  *   DB                   — D1 database named: portfolio_db
  *   ANALYTICS            — KV namespace named: PORTFOLIO_ANALYTICS
+ *   ANALYZE_LIMITER      — Rate Limiting binding: 3 requests / 60s, gates POST /analyze
  *
  * D1 Migration (run once in D1 console):
  *   CREATE TABLE IF NOT EXISTS leads (
@@ -42,7 +43,7 @@ const MODEL = 'openai/gpt-oss-120b'
 const KNOWN_PROJECTS = ['bestby', 'kilcon', 'lakehenry', 'arkham', 'blair']
 
 const PROFILE = `
-Joshua Werlein is a full stack software engineer based in Mondovi, WI, available for remote work immediately.
+Joshua Werlein is a full stack software engineer based in Mondovi, WI, available for remote work immediately. Four production client platforms live today plus a published native Android app; all client sites score 100 in Lighthouse Performance, Accessibility, and SEO.
 
 EDUCATION:
 - B.S. Software Engineering, Western Governors University (2025)
@@ -54,31 +55,27 @@ CERTIFICATIONS:
 
 TECHNICAL SKILLS:
 Languages: TypeScript, JavaScript, Java, SQL, C#
-Android: Android SDK, Room Database, Jetpack Components, ZXing barcode scanning, Biometric auth
-Web/Serverless: Cloudflare Workers, Cloudflare R2, Astro, React, Node.js, REST APIs, Signed sessions
+Web/Serverless: Cloudflare Workers, D1, KV, R2, Astro, React, Node.js, REST APIs, Resend
+Android: Room Database, Jetpack Components, ZXing barcode scanning, Biometric auth
 Cloud/DevOps: AWS, Cloudflare Pages, GitHub, CI/CD, MySQL
-Security: Turnstile CAPTCHA, Rate limiting, Signed cookie sessions, bcrypt
+Security: Turnstile CAPTCHA, Rate limiting, Signed cookie sessions, bcrypt, WCAG AA accessibility
 
 PRODUCTION EXPERIENCE:
 
-1. Full Stack Developer (Contract, 2026) — Arkham Enterprises (Apex Solar & Construction)
-   - Built and deployed a multi-page marketing/lead-gen site in React (React Router, Framer Motion)
-   - Custom Cloudflare Workers backend handling contact and quote-request forms via the Resend API
-   - Owned the project end-to-end: component architecture, theming, SEO (react-helmet-async), spam-protected lead forms
-   - Live site: arkhamsolar.com
+1. Full Stack Developer (Contract, 2026) — Arkham Enterprises (Apex Solar & Construction), arkhamsolar.com
+   - React + Framer Motion marketing/lead-gen site, Cloudflare Workers backend, spam-protected multi-step quote forms via Resend
 
-2. Freelance Software Engineer (2025) — KIL Construction & Friends of Lake Henry
-   - Designed and shipped serverless production platforms using Cloudflare Workers, R2, and Astro
-   - Implemented signed cookie sessions, Turnstile CAPTCHA, and IP rate limiting
-   - Built full media workflow admin tooling for non-technical clients
-   - Live sites: kilcon.work, friendsoflakehenry.com
+2. Full Stack Developer (Contract, 2025-2026) — Blair Sportsmen's Club, blairsportsmensclub.com
+   - Astro + Cloudflare Workers reservation platform: live availability calendar, Turnstile-protected booking pipeline, trap-league leaderboards
 
-3. Android Engineer — Best By Manager (2025)
-   - Shipped kiosk-style inventory app to Google Play (production)
-   - Full release lifecycle from closed beta through v2.0.0
-   - Three-tier permission model (Owner/Admin/Employee) with bcrypt + biometrics
-   - Offline-first Room DB, ZXing barcode scanning, Open Food Facts API, AlarmManager notifications
-   - Play Store: com.bestbymanager.app
+3. Full Stack Software Engineer (Contract, 2025) — KIL Construction & Friends of Lake Henry, kilcon.work, friendsoflakehenry.com
+   - Two serverless platforms on Astro/Cloudflare Workers with D1, KV, R2: signed cookie sessions, Turnstile CAPTCHA, edge rate limiting, zero downtime
+   - KIL: client review system (public submission, admin moderation with replies, aggregate ratings), R2-backed media pipeline
+   - Friends of Lake Henry: admin CMS (events, moderated photos, donor recognition, raffle management) for non-technical board members
+
+4. Android Engineer — Best By Manager (2025), Google Play: com.bestbymanager.app
+   - Kiosk-style inventory app, closed beta through v2.0.0, offline-first Room DB, ZXing barcode scanning, Open Food Facts API
+   - Three-tier permission model (Owner/Admin/Employee) with PIN sessions, bcrypt, biometric-gated owner controls
 `
 
 // ── HTML escape ───────────────────────────────────────────────────────────────
@@ -251,6 +248,12 @@ export default {
 
         if (jobDescription.length > 6000) {
           return withCors(json({ error: 'Job description too long' }, 400), cors)
+        }
+
+        const ip = request.headers.get('CF-Connecting-IP') || 'unknown'
+        const { success } = await env.ANALYZE_LIMITER.limit({ key: ip })
+        if (!success) {
+          return withCors(json({ error: 'Too many requests. Please wait a minute and try again.' }, 429), cors)
         }
 
         const prompt = `You are analyzing job fit for a specific candidate. Return ONLY valid JSON, no markdown, no backticks.
@@ -551,6 +554,48 @@ Return a JSON object with exactly these fields:
     } catch (err) {
       console.error('Worker error:', err)
       return withCors(json({ error: 'Internal server error' }, 500), cors)
+    }
+  },
+
+  // ── Scheduled canary ────────────────────────────────────────────────────
+  // Cron schedule itself is set in the Cloudflare dashboard (Settings →
+  // Trigger events), not here — this only fires on whatever schedule is
+  // configured there. Minimal ping to catch a broken /analyze even when no
+  // visitor has triggered it. Alerts through the same Resend/KV path as
+  // Layer 1, under its own dedup key so it can't mask or be masked by a
+  // live-traffic failure.
+  async scheduled(event, env, ctx) {
+    const groqRes = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${env.GROQ_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: MODEL,
+        messages: [{ role: 'user', content: 'ping' }],
+        max_completion_tokens: 5,
+      }),
+    })
+
+    if (groqRes.ok) return
+
+    const errText = await groqRes.text()
+    let errCode = null
+    try { errCode = JSON.parse(errText)?.error?.code } catch { /* body wasn't JSON */ }
+    console.error(`Canary: Groq ${groqRes.status} [${errCode ?? 'unknown'}]:`, errText)
+
+    if (await shouldAlert(env, 'alert:jobfit-canary')) {
+      sendAlert(
+        env, ctx,
+        `[ALERT] Job Fit Checker canary — Groq ${groqRes.status}`,
+        `Scheduled canary ping to Groq failed.\n\n` +
+        `Status: ${groqRes.status}\n` +
+        `Groq error code: ${errCode ?? 'unknown'}\n` +
+        `Model: ${MODEL}\n` +
+        `Time (UTC): ${new Date().toISOString()}\n\n` +
+        `Raw response body:\n${errText}`
+      )
     }
   },
 }
