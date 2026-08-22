@@ -1,18 +1,65 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { WORKER } from '../App'
- 
+
 const PLACEHOLDER = `Paste a job description here and I'll analyze how well Joshua's skills and experience match the role...
 
 Example: "We're looking for a full stack engineer with experience in JavaScript, REST APIs, cloud infrastructure, and shipping production systems. Experience with Android a plus."`
 
 const MAX_CHARS = 6000
 
+const TURNSTILE_SITE_KEY = '0x4AAAAAAEYDe6qRWV7CNOdI'
+const TURNSTILE_SCRIPT_ID = 'cf-turnstile-script'
+const TURNSTILE_SCRIPT_SRC = 'https://challenges.cloudflare.com/turnstile/v0/api.js'
+
 export default function JobFitChecker() {
   const [jobText, setJobText] = useState('')
   const [result, setResult] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
- 
+  const [turnstileToken, setTurnstileToken] = useState(null)
+
+  const turnstileContainerRef = useRef(null)
+  const turnstileWidgetIdRef = useRef(null)
+
+  // Load the Turnstile script once and render the widget explicitly, so we
+  // control when/how it mounts instead of relying on the implicit cf-turnstile div.
+  useEffect(() => {
+    const renderWidget = () => {
+      if (!turnstileContainerRef.current || !window.turnstile || turnstileWidgetIdRef.current) return
+      turnstileWidgetIdRef.current = window.turnstile.render(turnstileContainerRef.current, {
+        sitekey: TURNSTILE_SITE_KEY,
+        action: 'job_fit',
+        callback: (token) => setTurnstileToken(token),
+        'expired-callback': () => setTurnstileToken(null),
+        'error-callback': () => setTurnstileToken(null),
+      })
+    }
+
+    if (window.turnstile) {
+      renderWidget()
+      return
+    }
+
+    let script = document.getElementById(TURNSTILE_SCRIPT_ID)
+    if (!script) {
+      script = document.createElement('script')
+      script.id = TURNSTILE_SCRIPT_ID
+      script.src = TURNSTILE_SCRIPT_SRC
+      script.async = true
+      script.defer = true
+      document.head.appendChild(script)
+    }
+    script.addEventListener('load', renderWidget)
+    return () => script.removeEventListener('load', renderWidget)
+  }, [])
+
+  const resetTurnstile = () => {
+    if (window.turnstile && turnstileWidgetIdRef.current) {
+      window.turnstile.reset(turnstileWidgetIdRef.current)
+    }
+    setTurnstileToken(null)
+  }
+
   const analyze = async () => {
     if (!jobText.trim() || jobText.trim().length < 50) {
       setError('Please paste a full job description (at least 50 characters).')
@@ -22,6 +69,10 @@ export default function JobFitChecker() {
       setError(`Job description is too long (max ${MAX_CHARS} characters).`)
       return
     }
+    if (!turnstileToken) {
+      setError('Please complete the verification challenge.')
+      return
+    }
     setLoading(true)
     setError(null)
     setResult(null)
@@ -29,10 +80,14 @@ export default function JobFitChecker() {
       const res = await fetch(`${WORKER}/analyze`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ jobDescription: jobText }),
+        body: JSON.stringify({ jobDescription: jobText, turnstileToken }),
       })
       if (res.status === 429) {
         setError('AI analyzer is temporarily rate limited. Please try again in a few minutes.')
+        return
+      }
+      if (res.status === 403) {
+        setError('Verification failed, please try again.')
         return
       }
       if (res.status === 400) {
@@ -47,7 +102,10 @@ export default function JobFitChecker() {
       setError('Analysis failed. Please try again in a moment.')
       console.error(err)
     } finally {
+      // Turnstile tokens are single-use — reset after every attempt
+      // (success or failure) or the next analysis silently 403s.
       setLoading(false)
+      resetTurnstile()
     }
   }
  
@@ -133,7 +191,12 @@ export default function JobFitChecker() {
                 lineHeight: 1.65,
               }}
             />
- 
+
+            {/* Turnstile challenge */}
+            <div style={{ padding: '0 20px 12px' }}>
+              <div ref={turnstileContainerRef} />
+            </div>
+
             {/* Footer */}
             <div style={{
               padding: '12px 20px',
@@ -161,7 +224,7 @@ export default function JobFitChecker() {
                   className="btn btn-primary"
                   style={{ fontSize: '0.82rem', padding: '8px 18px', minWidth: 100 }}
                   onClick={analyze}
-                  disabled={loading || !jobText.trim()}
+                  disabled={loading || !jobText.trim() || !turnstileToken}
                 >
                   {loading ? (
                     <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
