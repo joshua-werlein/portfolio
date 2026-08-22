@@ -2,9 +2,11 @@ import { useState } from 'react'
 import { WORKER } from '../App'
  
 const PLACEHOLDER = `Paste a job description here and I'll analyze how well Joshua's skills and experience match the role...
- 
+
 Example: "We're looking for a full stack engineer with experience in JavaScript, REST APIs, cloud infrastructure, and shipping production systems. Experience with Android a plus."`
- 
+
+const MAX_CHARS = 6000
+
 export default function JobFitChecker() {
   const [jobText, setJobText] = useState('')
   const [result, setResult] = useState(null)
@@ -14,6 +16,10 @@ export default function JobFitChecker() {
   const analyze = async () => {
     if (!jobText.trim() || jobText.trim().length < 50) {
       setError('Please paste a full job description (at least 50 characters).')
+      return
+    }
+    if (jobText.length > MAX_CHARS) {
+      setError(`Job description is too long (max ${MAX_CHARS} characters).`)
       return
     }
     setLoading(true)
@@ -27,6 +33,11 @@ export default function JobFitChecker() {
       })
       if (res.status === 429) {
         setError('AI analyzer is temporarily rate limited. Please try again in a few minutes.')
+        return
+      }
+      if (res.status === 400) {
+        const data = await res.json().catch(() => null)
+        setError(data?.error || 'Job description is too long or too short.')
         return
       }
       if (!res.ok) throw new Error(`Server error: ${res.status}`)
@@ -94,7 +105,7 @@ export default function JobFitChecker() {
                 borderRadius: 100,
                 padding: '2px 8px',
               }}>
-                Powered by Llama 3.3
+                Powered by GPT-OSS 120B (Groq)
               </span>
             </div>
  
@@ -107,6 +118,7 @@ export default function JobFitChecker() {
               value={jobText}
               onChange={e => { setJobText(e.target.value); setError(null) }}
               placeholder={PLACEHOLDER}
+              maxLength={MAX_CHARS}
               style={{
                 width: '100%',
                 minHeight: 220,
@@ -295,7 +307,7 @@ export default function JobFitChecker() {
           fontFamily: 'var(--font-mono)',
           textAlign: 'center',
         }}>
-          AI analysis via Google Llama 3.3 (Groq) — results are a guide, not a guarantee.
+          AI analysis via GPT-OSS 120B (Groq) — results are a guide, not a guarantee.
         </p>
       </div>
  
