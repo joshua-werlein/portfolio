@@ -19,6 +19,7 @@
  *   RESEND_API_KEY        — from resend.com (also used for /analyze failure alerts)
  *   ADMIN_KEY             — your chosen admin password
  *   ALLOWED_ORIGIN         — https://joshuawerlein.com (after deploy)
+ *   TURNSTILE_SECRET_KEY   — from the Cloudflare Turnstile widget config, verifies /analyze
  *
  * Bindings required:
  *   DB                   — D1 database named: portfolio_db
@@ -240,7 +241,7 @@ export default {
       // ── POST /analyze ────────────────────────────────────────────────────
       if (path === '/analyze' && request.method === 'POST') {
         const body = parseBody()
-        const { jobDescription } = body || {}
+        const { jobDescription, turnstileToken } = body || {}
 
         if (!jobDescription || jobDescription.trim().length < 50) {
           return withCors(json({ error: 'Job description too short' }, 400), cors)
@@ -251,6 +252,30 @@ export default {
         }
 
         const ip = request.headers.get('CF-Connecting-IP') || 'unknown'
+
+        // Verify Turnstile before the limiter check and before the Groq call —
+        // a failed challenge shouldn't consume rate-limit budget or Groq quota.
+        if (!turnstileToken) {
+          return withCors(json({ error: 'Verification required' }, 403), cors)
+        }
+
+        const tsRes = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams({
+            secret: env.TURNSTILE_SECRET_KEY,
+            response: turnstileToken,
+            remoteip: ip,
+          }),
+        })
+        const tsData = await tsRes.json()
+        // Check all three — `success` alone accepts tokens minted for any site
+        // sharing this widget; hostname/action pin it to this page specifically.
+        if (!tsData.success || tsData.hostname !== 'joshuawerlein.com' || tsData.action !== 'job_fit') {
+          console.error('Turnstile verification failed:', tsData)
+          return withCors(json({ error: 'Verification failed' }, 403), cors)
+        }
+
         const { success } = await env.ANALYZE_LIMITER.limit({ key: ip })
         if (!success) {
           return withCors(json({ error: 'Too many requests. Please wait a minute and try again.' }, 429), cors)
