@@ -2,16 +2,21 @@
  * Portfolio Cloudflare Worker
  *
  * Endpoints:
- *   POST /analyze        — Groq (Llama 3.3) job fit analysis
+ *   POST /analyze        — Groq (gpt-oss-120b) job fit analysis
  *   POST /contact        — Contact form → D1 leads table
  *   GET  /leads          — Admin: list all leads
  *   PATCH /leads/:id     — Admin: update status/notes
  *   POST /track          — Analytics event tracking → KV
  *   GET  /analytics      — Admin: get analytics summary
  *
+ * /analyze failure alerting:
+ *   On a Groq error response or an unparseable 200, sends a plain-text
+ *   Resend email to jjwerlein@gmail.com ("[ALERT] Job Fit Checker — ..."),
+ *   deduped per failure type via KV (env.ANALYTICS) for 6 hours.
+ *
  * Secrets required (set via Cloudflare dashboard → Worker → Settings → Variables):
  *   GROQ_API_KEY          — from console.groq.com
- *   RESEND_API_KEY        — from resend.com
+ *   RESEND_API_KEY        — from resend.com (also used for /analyze failure alerts)
  *   ADMIN_KEY             — your chosen admin password
  *   ALLOWED_ORIGIN         — https://joshuawerlein.com (after deploy)
  *
@@ -31,6 +36,10 @@
  *     created_at TEXT DEFAULT (datetime('now'))
  *   );
  */
+
+const MODEL = 'openai/gpt-oss-120b'
+
+const KNOWN_PROJECTS = ['bestby', 'kilcon', 'lakehenry', 'arkham', 'blair']
 
 const PROFILE = `
 Joshua Werlein is a full stack software engineer based in Mondovi, WI, available for remote work immediately.
@@ -142,6 +151,48 @@ async function checkRateLimit(env, ip, route) {
   return record.count > RATE_LIMIT
 }
 
+// ── Failure alerting (KV-deduped, Resend, non-blocking) ─────────────────────
+const ALERT_DEDUP_TTL = 21600 // 6 hours — well above KV's 60s minimum, do not lower
+
+async function shouldAlert(env, dedupKey) {
+  try {
+    const existing = await env.ANALYTICS.get(dedupKey)
+    if (existing) return false
+    await env.ANALYTICS.put(dedupKey, '1', { expirationTtl: ALERT_DEDUP_TTL })
+    return true
+  } catch {
+    // Dedup check itself failed — alert anyway. A silently-skipped alert
+    // due to a KV hiccup is worse than an occasional duplicate email.
+    return true
+  }
+}
+
+function sendAlert(env, ctx, subject, bodyText) {
+  ctx.waitUntil((async () => {
+    try {
+      const res = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${env.RESEND_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          from: 'portfolio@joshuawerlein.com',
+          to: 'jjwerlein@gmail.com',
+          subject,
+          text: bodyText,
+        }),
+      })
+      if (!res.ok) {
+        const errText = await res.text()
+        console.error(`Alert email failed [${res.status}]:`, errText)
+      }
+    } catch (err) {
+      console.error('Alert email threw:', err)
+    }
+  })())
+}
+
 // ── Input validation ──────────────────────────────────────────────────────────
 function validateContact({ name, email, subject, message }) {
   const n = name?.trim()
@@ -161,7 +212,7 @@ function validateContact({ name, email, subject, message }) {
 
 // ── Main handler ──────────────────────────────────────────────────────────────
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     const origin = request.headers.get('Origin') || ''
     const cors   = corsHeaders(origin, env.ALLOWED_ORIGIN)
 
@@ -198,7 +249,7 @@ export default {
           return withCors(json({ error: 'Job description too short' }, 400), cors)
         }
 
-        if (jobDescription.length > 8000) {
+        if (jobDescription.length > 6000) {
           return withCors(json({ error: 'Job description too long' }, 400), cors)
         }
 
@@ -226,32 +277,84 @@ Return a JSON object with exactly these fields:
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            model: 'llama-3.3-70b-versatile',
+            model: MODEL,
             messages: [
               { role: 'system', content: 'You are a job fit analyzer. Always respond with valid JSON only — no markdown, no backticks, no explanation.' },
               { role: 'user', content: prompt },
             ],
             temperature: 0.3,
-            max_tokens: 1500,
+            max_completion_tokens: 3000,
+            reasoning_effort: 'low',
+            include_reasoning: false,
+            response_format: {
+              type: 'json_schema',
+              json_schema: {
+                name: 'job_fit_analysis',
+                strict: true,
+                schema: {
+                  type: 'object',
+                  properties: {
+                    score: { type: 'integer' },
+                    summary: { type: 'string' },
+                    strengths: { type: 'array', items: { type: 'string' } },
+                    gaps: { type: 'array', items: { type: 'string' } },
+                    recommendation: { type: 'string' },
+                  },
+                  required: ['score', 'summary', 'strengths', 'gaps', 'recommendation'],
+                  additionalProperties: false,
+                },
+              },
+            },
           }),
         })
 
         if (!groqRes.ok) {
           const errText = await groqRes.text()
-          console.error(`Groq ${groqRes.status}:`, errText)
+          let errCode = null
+          try { errCode = JSON.parse(errText)?.error?.code } catch { /* body wasn't JSON */ }
+          console.error(`Groq ${groqRes.status} [${errCode ?? 'unknown'}]:`, errText)
+
+          if (await shouldAlert(env, 'alert:jobfit')) {
+            sendAlert(
+              env, ctx,
+              `[ALERT] Job Fit Checker — Groq ${groqRes.status}`,
+              `Job Fit Checker /analyze failed.\n\n` +
+              `Status: ${groqRes.status}\n` +
+              `Groq error code: ${errCode ?? 'unknown'}\n` +
+              `Model: ${MODEL}\n` +
+              `Time (UTC): ${new Date().toISOString()}\n\n` +
+              `Raw response body:\n${errText}`
+            )
+          }
+
           return withCors(json({ error: 'AI service error', status: groqRes.status }, groqRes.status), cors)
         }
 
-        const groqData = await groqRes.json()
-        const rawText  = groqData?.choices?.[0]?.message?.content || ''
-        const jsonMatch = rawText.match(/\{[\s\S]*\}/)
-        const cleaned   = jsonMatch ? jsonMatch[0] : rawText
+        const groqData    = await groqRes.json()
+        const finishReason = groqData?.choices?.[0]?.finish_reason
+        const rawText      = groqData?.choices?.[0]?.message?.content || ''
+        const jsonMatch     = rawText.match(/\{[\s\S]*\}/)
+        const cleaned       = jsonMatch ? jsonMatch[0] : rawText
 
         let result
         try {
           result = JSON.parse(cleaned)
         } catch {
-          console.error('Groq parse error, raw:', rawText)
+          console.error(`Groq parse error [finish_reason=${finishReason ?? 'unknown'}], raw:`, rawText)
+
+          if (await shouldAlert(env, 'alert:jobfit-parse')) {
+            sendAlert(
+              env, ctx,
+              `[ALERT] Job Fit Checker — parse failure`,
+              `Job Fit Checker /analyze got a 200 from Groq but the response body wasn't parseable JSON.\n\n` +
+              `finish_reason: ${finishReason ?? 'unknown'}` +
+              (finishReason === 'length' ? ' (likely a token-budget truncation, not malformed output)' : '') + `\n` +
+              `Model: ${MODEL}\n` +
+              `Time (UTC): ${new Date().toISOString()}\n\n` +
+              `Raw content:\n${rawText}`
+            )
+          }
+
           return withCors(json({ error: 'Failed to parse AI response' }, 500), cors)
         }
 
@@ -397,7 +500,7 @@ Return a JSON object with exactly these fields:
             const current = await env.ANALYTICS.get('resume_downloads')
             await env.ANALYTICS.put('resume_downloads', String((parseInt(current) || 0) + 1))
           }
-          if (event === 'project_click' && project) {
+          if (event === 'project_click' && KNOWN_PROJECTS.includes(project)) {
             const key     = `project_click_${project}`
             const current = await env.ANALYTICS.get(key)
             await env.ANALYTICS.put(key, String((parseInt(current) || 0) + 1))
@@ -418,18 +521,19 @@ Return a JSON object with exactly these fields:
           env.ANALYTICS.get('analyze_count'),
         ])
 
-        const projectIds = ['bestby', 'kilcon', 'lakehenry']
         const clickCounts = await Promise.all(
-          projectIds.map(id => env.ANALYTICS.get(`project_click_${id}`))
+          KNOWN_PROJECTS.map(id => env.ANALYTICS.get(`project_click_${id}`))
         )
 
         const labels = {
           bestby:    'Best By Manager',
           kilcon:    'KIL Construction',
           lakehenry: 'Friends of Lake Henry',
+          arkham:    'Arkham Enterprises',
+          blair:     'Blair Sportsmen\'s Club',
         }
         const projectClicks = {}
-        projectIds.forEach((id, i) => {
+        KNOWN_PROJECTS.forEach((id, i) => {
           projectClicks[labels[id]] = parseInt(clickCounts[i]) || 0
         })
 
