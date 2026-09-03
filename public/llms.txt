@@ -2,26 +2,30 @@
 
 > Full stack software engineer based in Mondovi, Wisconsin. Building production Android apps, serverless APIs, and modern web platforms with a focus on ownership from first commit to live deployment. Open to remote opportunities.
 
-I hold a B.S. in Software Engineering from Western Governors University and work across the full stack — TypeScript and React on the frontend, Cloudflare Workers with D1, KV, and R2 for edge platforms, and Java with Spring Boot for backend services. I also ship native Android via Kotlin.
+I hold a B.S. in Software Engineering from Western Governors University and work across the full stack — TypeScript and React on the frontend, Cloudflare Workers with D1, KV, and R2 for edge platforms, and Java for native Android applications.
 
 ## Portfolio Sections
 
 - [About](https://joshuawerlein.com/#about): Background, education, and how I approach software.
-- [Experience](https://joshuawerlein.com/#experience): Professional history and current work through kilcon.work.
+- [Experience](https://joshuawerlein.com/#experience): Professional history and production client work.
 - [Projects](https://joshuawerlein.com/#projects): Published apps and platforms I've built end-to-end.
 - [Skills](https://joshuawerlein.com/#skills): Languages, frameworks, and tools I work with.
 - [Job Fit](https://joshuawerlein.com/#jobfit): Interactive tool for matching my profile against a role.
-- [Contact](https://joshuawerlein.com/#contact): Direct message form; typical response within one business day.
+- [Contact](https://joshuawerlein.com/#contact): Direct message form.
 
 ## Featured Projects
 
-- [Arkham Enterprises](https://www.arkhamsolar.com): Live production marketing and lead-gen site for a solar and construction company. React SPA (React Router, Framer Motion) served from a Cloudflare Worker that also handles `/api/*` form submissions. Contact and quote-request forms send email via the Resend API with honeypot spam protection. SEO handled via react-helmet-async for per-page metadata. Source: [github.com/joshua-werlein/arkham-solar](https://github.com/joshua-werlein/arkham-solar).
+- [Grayz'n Buffalo Bar & Grill](https://grayznbuffalo.com): Production restaurant platform built with Astro and Cloudflare Workers/Pages. Uses D1, KV, and R2 for menu content, recurring weekly specials, sessions, and managed media; includes a scheduled Facebook Graph Worker with cached, last-known-good feed behavior and Turnstile/Resend contact handling. Source: [github.com/joshua-werlein/grayzn-buffalo](https://github.com/joshua-werlein/grayzn-buffalo).
 
-- [Best By Manager](https://play.google.com/store/apps/details?id=com.joshuawerlein.bestbymanager): Kiosk-style Android app for tracking product expiration dates in retail and food-service environments. Published to Google Play through a full release lifecycle: closed beta, staged rollout, v2.0.0 production. Offline-first Room (SQLite) database, ZXing barcode scanner integrated with the Open Food Facts API, three-tier permission model (Owner biometric, Admin PIN, Employee) with bcrypt credential storage, AlarmManager expiration notifications with configurable lead-time, Jetpack components throughout (ViewModel, LiveData, Navigation, RecyclerView).
+- [Arkham Enterprises](https://www.arkhamsolar.com): Live production marketing and lead-gen site for a solar and construction company. React SPA served from a Cloudflare Worker with multi-step quote-request forms, Resend delivery, deep-linked service context, structured metadata, and accessibility-focused routing. Source: [github.com/joshua-werlein/arkham-solar](https://github.com/joshua-werlein/arkham-solar).
 
-- [KIL Construction](https://kilcon.work): Live production full-stack content platform for a construction company. Cloudflare Workers serverless backend with an Astro frontend (islands architecture), Cloudflare R2 object storage with custom signed-URL access, signed cookie session admin authentication (no third-party auth dependency), Cloudflare Turnstile CAPTCHA plus in-Worker IP rate limiting on all public endpoints. Custom admin API for upload, rename, and delete operations behind session-gated middleware.
+- [Best By Manager](https://play.google.com/store/apps/details?id=com.bestbymanager.app): Published Android inventory app for shared-device retail and food-service workflows. Uses Room/SQLite, ZXing barcode scanning, local expiration alerts, and Owner/Admin/Employee access controls. Source: [github.com/joshua-werlein/BestByManager](https://github.com/joshua-werlein/BestByManager).
 
-- [Friends of Lake Henry](https://friendsoflakehenry.com): Live production web platform for a nonprofit lake association. Same Cloudflare Workers + Astro secure architecture as KIL Construction, adapted for a non-technical admin audience. Delivers donation workflows with external payment integration, admin-managed event calendar, and a photo gallery backed by Cloudflare R2. Accessibility-first frontend designed for non-technical board members to manage content directly.
+- [KIL Construction](https://kilcon.work): Production Astro/Cloudflare platform with R2-backed project media, review moderation, secured admin tooling, and Worker-backed business workflows. Source: [github.com/joshua-werlein/kilConstruction](https://github.com/joshua-werlein/kilConstruction).
+
+- [Friends of Lake Henry](https://friendsoflakehenry.com): Production nonprofit platform using Astro and Cloudflare services for events, raffle operations, donor recognition, and moderated community photo submissions. Source: [github.com/joshua-werlein/friends-of-lake-henry](https://github.com/joshua-werlein/friends-of-lake-henry).
+
+- [Blair Sportsmen's Club](https://blairsportsmensclub.com): Event and reservation platform with a D1-backed availability calendar, reservation requests, magic-link administration, and trap-league scoring.
 
 ## External Links
 
@@ -32,5 +36,5 @@ I hold a B.S. in Software Engineering from Western Governors University and work
 ## Site Information
 
 - Site source: [github.com/joshua-werlein/portfolio](https://github.com/joshua-werlein/portfolio)
-- Stack: React 18, Vite, Cloudflare Pages
-- Status: Actively maintained; open to remote junior and full stack opportunities.
+- Stack: React, Vite, Cloudflare Workers
+- Status: Actively maintained; open to remote software engineering opportunities.
