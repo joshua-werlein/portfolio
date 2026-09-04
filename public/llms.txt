@@ -27,7 +27,7 @@ I hold a B.S. in Software Engineering from Western Governors University and work
 
 - [GitHub](https://github.com/joshua-werlein): Open source contributions and portfolio repositories.
 - [LinkedIn](https://www.linkedin.com/in/joshua-werlein): Professional profile and contact.
-- [Resume (PDF)](https://joshuawerlein.com/resume.pdf): Direct download of the current full-stack resume.
+- [Resume (PDF)](https://joshuawerlein.com/Joshua-Werlein_Resume.pdf): Direct download of the current full-stack resume.
 
 ## Site Information
 
