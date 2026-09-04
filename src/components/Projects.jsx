@@ -27,6 +27,30 @@ const PROJECTS = [
     typeColorText: 'var(--tag-green)',
   },
   {
+    id: 'grayzn',
+    name: 'Grayz’n Buffalo Bar & Grill',
+    tagline: 'Restaurant operations platform with managed content and live integrations',
+    impact: 'Production client platform — D1/KV/R2 workflows plus a scheduled, failure-tolerant Facebook feed integration',
+    description:
+      'A production restaurant platform built with Astro and Cloudflare services, with authenticated operations for menu content, recurring weekly specials, and managed images. A scheduled Facebook Graph Worker caches feed and media data and preserves the last known-good content when refreshes fail.',
+    architecture: [
+      'Astro application deployed on Cloudflare Pages/Workers with D1-backed menu and weekly-special data',
+      'KV-backed admin sessions and R2-backed managed media workflows for restaurant content',
+      'Recurring weekly-special defaults and date-bound admin workflows designed for non-technical staff',
+      'Separate scheduled Facebook Graph Worker with cached feed/media data and last-known-good failure behavior',
+      'Turnstile-protected contact delivery through Resend with production security headers and staging no-index controls',
+      'Responsive image delivery, reduced-motion support, and keyboard-accessible interactive UI',
+    ],
+    tags: ['Astro', 'Cloudflare Workers', 'D1', 'KV', 'R2', 'Turnstile', 'Resend'],
+    links: [
+      { label: 'grayznbuffalo.com', url: 'https://grayznbuffalo.com', primary: true },
+      { label: 'GitHub', url: 'https://github.com/joshua-werlein/grayzn-buffalo', primary: false },
+    ],
+    type: 'Web Platform',
+    typeColor: '#B96B2D',
+    typeColorText: 'var(--tag-orange)',
+  },
+  {
     id: 'kilcon',
     name: 'KIL Construction',
     tagline: 'Serverless business platform for a construction company',
