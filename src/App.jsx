@@ -102,7 +102,7 @@ export default function App() {
               {theme === 'dark' ? '☀️' : '🌙'}
             </button>
             <a
-              href="/resume.pdf"
+              href="/Joshua-Werlein_Resume.pdf"
               className="btn btn-primary"
               style={{ padding: '8px 16px', fontSize: '0.8rem' }}
               onClick={() => {
@@ -112,7 +112,7 @@ export default function App() {
                   body: JSON.stringify({ event: 'resume_download' }),
                 }).catch(() => {})
               }}
-              download
+              download="Joshua-Werlein_Resume.pdf"
             >
               Resume ↓
             </a>
