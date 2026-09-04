@@ -41,10 +41,10 @@
 
 const MODEL = 'openai/gpt-oss-120b'
 
-const KNOWN_PROJECTS = ['bestby', 'kilcon', 'lakehenry', 'arkham', 'blair']
+const KNOWN_PROJECTS = ['bestby', 'grayzn', 'kilcon', 'lakehenry', 'arkham', 'blair']
 
 const PROFILE = `
-Joshua Werlein is a full stack software engineer based in Mondovi, WI, available for remote work immediately. Four production client platforms live today plus a published native Android app; all client sites score 100 in Lighthouse Performance, Accessibility, and SEO.
+Joshua Werlein is a full stack software engineer based in Mondovi, WI, available for remote work immediately. Five production client platforms plus a published native Android app. Four client web platforms have achieved 100 Lighthouse scores in Performance, Accessibility, and SEO; Grayz'n Buffalo is not included in that blanket score claim.
 
 EDUCATION:
 - B.S. Software Engineering, Western Governors University (2025)
@@ -63,20 +63,23 @@ Security: Turnstile CAPTCHA, Rate limiting, Signed cookie sessions, bcrypt, WCAG
 
 PRODUCTION EXPERIENCE:
 
-1. Full Stack Developer (Contract, 2026) — Arkham Enterprises (Apex Solar & Construction), arkhamsolar.com
+1. Full Stack Developer (Contract, 2026) — Grayz'n Buffalo Bar & Grill, grayznbuffalo.com
+   - Astro + Cloudflare restaurant platform using D1, KV, and R2 for menu content, recurring weekly specials, sessions, and managed media
+   - Scheduled Facebook Graph Worker caches feed/media data and preserves the last known-good feed during refresh failures; Turnstile + Resend contact delivery
+
+2. Full Stack Developer (Contract, 2026) — Arkham Enterprises (Apex Solar & Construction), arkhamsolar.com
    - React + Framer Motion marketing/lead-gen site, Cloudflare Workers backend, spam-protected multi-step quote forms via Resend
 
-2. Full Stack Developer (Contract, 2025-2026) — Blair Sportsmen's Club, blairsportsmensclub.com
-   - Astro + Cloudflare Workers reservation platform: live availability calendar, Turnstile-protected booking pipeline, trap-league leaderboards
+3. Full Stack Developer (Contract, 2025-2026) — Blair Sportsmen's Club, blairsportsmensclub.com
+   - Astro + Cloudflare reservation platform: D1-backed availability calendar, durable reservation requests, magic-link admin access, trap-league scoring
 
-3. Full Stack Software Engineer (Contract, 2025) — KIL Construction & Friends of Lake Henry, kilcon.work, friendsoflakehenry.com
-   - Two serverless platforms on Astro/Cloudflare Workers with D1, KV, R2: signed cookie sessions, Turnstile CAPTCHA, edge rate limiting, zero downtime
-   - KIL: client review system (public submission, admin moderation with replies, aggregate ratings), R2-backed media pipeline
-   - Friends of Lake Henry: admin CMS (events, moderated photos, donor recognition, raffle management) for non-technical board members
+4. Full Stack Software Engineer (Contract, 2025) — KIL Construction & Friends of Lake Henry, kilcon.work, friendsoflakehenry.com
+   - KIL: R2-backed project media, review moderation, secured admin tooling, Worker-backed business workflows
+   - Friends of Lake Henry: D1/KV/R2 nonprofit CMS for events, raffles, donors, and moderated community photos with protected admin mutations
 
-4. Android Engineer — Best By Manager (2025), Google Play: com.bestbymanager.app
-   - Kiosk-style inventory app, closed beta through v2.0.0, offline-first Room DB, ZXing barcode scanning, Open Food Facts API
-   - Three-tier permission model (Owner/Admin/Employee) with PIN sessions, bcrypt, biometric-gated owner controls
+5. Android Engineer — Best By Manager (2025), Google Play: com.bestbymanager.app
+   - Local-first kiosk inventory app using Room/SQLite, ZXing barcode scanning, Open Food Facts API, and expiration alerts
+   - Owner/Admin/Employee access model with PIN sessions, bcrypt, lockout behavior, and biometric-gated owner controls
 `
 
 // ── HTML escape ───────────────────────────────────────────────────────────────
@@ -555,6 +558,7 @@ Return a JSON object with exactly these fields:
 
         const labels = {
           bestby:    'Best By Manager',
+          grayzn:    'Grayz’n Buffalo',
           kilcon:    'KIL Construction',
           lakehenry: 'Friends of Lake Henry',
           arkham:    'Arkham Enterprises',

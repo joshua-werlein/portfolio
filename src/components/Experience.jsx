@@ -2,6 +2,23 @@ import { useState } from 'react'
  
 const EXPERIENCES = [
   {
+    id: 'grayzn',
+    role: 'Software Engineer — Contract',
+    company: 'Grayz’n Buffalo Bar & Grill',
+    period: '2026',
+    type: 'Freelance · Remote',
+    status: 'live',
+    links: [
+      { label: 'grayznbuffalo.com', url: 'https://grayznbuffalo.com' },
+    ],
+    bullets: [
+      'Delivered an Astro + Cloudflare restaurant platform using D1, KV, and R2, with authenticated workflows for menu content, recurring weekly specials, and managed images.',
+      'Built a scheduled Facebook Graph Worker that caches feed/media data and preserves the last known-good feed during refresh failures; integrated Turnstile-protected contact delivery through Resend.',
+      'Owned staging, accessibility, responsive performance work, and production cutover preparation for a live small-business platform.',
+    ],
+    tags: ['Astro', 'Cloudflare Workers', 'D1', 'KV', 'R2', 'Turnstile', 'Resend'],
+  },
+  {
     id: 'arkham',
     role: 'Software Engineer — Contract',
     company: 'Arkham Enterprises (Apex Solar and Construction)',
