@@ -6,7 +6,7 @@ Personal portfolio for Joshua Werlein, full stack software engineer in west cent
 
 A single-page React app presenting client work, shipped projects, and contact info:
 
-- **Experience**: contract work for Arkham Enterprises (arkhamsolar.com), KIL Construction (kilcon.work), Friends of Lake Henry (friendsoflakehenry.com), and Blair Sportsmen's Club (blairsportsmensclub.com)
+- **Experience**: contract work for Grayz'n Buffalo Bar & Grill (grayznbuffalo.com), Arkham Enterprises (arkhamsolar.com), KIL Construction (kilcon.work), Friends of Lake Henry (friendsoflakehenry.com), and Blair Sportsmen's Club (blairsportsmensclub.com)
 - **Projects**: production deployments with real users, including Best By Manager on Google Play
 - **llms.txt** at the site root for AI agent discoverability
 
@@ -31,7 +31,7 @@ Deployed via Cloudflare Workers with static assets. Pushes to `main` deploy auto
 | Project | Repo |
 |---|---|
 | Best By Manager (Android) | [BestByManager](https://github.com/joshua-werlein/BestByManager) |
+| Grayz'n Buffalo Bar & Grill | [grayzn-buffalo](https://github.com/joshua-werlein/grayzn-buffalo) |
 | KIL Construction | [kilConstruction](https://github.com/joshua-werlein/kilConstruction) |
 | Friends of Lake Henry | [friends-of-lake-henry](https://github.com/joshua-werlein/friends-of-lake-henry) |
 | Arkham Enterprises | [arkham-solar](https://github.com/joshua-werlein/arkham-solar) |
-
