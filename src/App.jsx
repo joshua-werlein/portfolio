@@ -1,10 +1,10 @@
 import { useState, useEffect, useRef } from 'react'
 import Hero from './components/Hero'
-import About from './components/About'
-import Experience from './components/Experience'
-import Projects from './components/Projects'
+import SelectedWork from './components/SelectedWork'
 import Skills from './components/Skills'
+import Background from './components/Background'
 import JobFitChecker from './components/JobFitChecker'
+import ResumeCTA from './components/ResumeCTA'
 import Contact from './components/Contact'
 import AdminPanel from './components/AdminPanel'
 
@@ -27,7 +27,6 @@ export default function App() {
   const toggleTheme = () => {
     const next = theme === 'dark' ? 'light' : 'dark'
     setTheme(next)
-    document.documentElement.setAttribute('data-theme', next)
     localStorage.setItem('portfolio-theme', next)
   }
 
@@ -37,7 +36,6 @@ export default function App() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  // Close mobile menu on scroll
   useEffect(() => {
     const onScroll = () => { if (mobileMenuOpen) setMobileMenuOpen(false) }
     window.addEventListener('scroll', onScroll, { passive: true })
@@ -148,15 +146,15 @@ export default function App() {
       <main>
         <Hero onScrollTo={scrollTo} />
         <div className="divider" />
-        <Projects />
+        <SelectedWork />
         <div className="divider" />
         <Skills />
         <div className="divider" />
-        <About />
-        <div className="divider" />
-        <Experience />
+        <Background />
         <div className="divider" />
         <JobFitChecker />
+        <div className="divider" />
+        <ResumeCTA />
         <div className="divider" />
         <Contact />
       </main>
