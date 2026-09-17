@@ -42,6 +42,18 @@ export default function App() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [mobileMenuOpen])
 
+  // Portfolio visit tracking — once per browser session, guarded against
+  // React Strict Mode double-firing and SPA navigation re-mounts.
+  useEffect(() => {
+    if (sessionStorage.getItem('sv')) return
+    sessionStorage.setItem('sv', '1')
+    fetch(`${WORKER}/track`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ event: 'site_visit' }),
+    }).catch(() => {})
+  }, [])
+
   // Hidden admin: 5 rapid clicks on logo
   const handleLogoClick = () => {
     logoClickCount.current += 1

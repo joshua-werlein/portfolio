@@ -422,18 +422,19 @@ export default function AdminPanel({ workerUrl, onClose }) {
                 ) : (
                   <>
                     {/* Summary cards */}
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16, marginBottom: 28 }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: 12, marginBottom: 28 }}>
                       {[
-                        { label: 'Resume Downloads', value: analytics.resume_downloads ?? 0, icon: '📄', color: 'var(--accent)' },
-                        { label: 'Contact Submissions', value: analytics.contact_submissions ?? 0, icon: '✉', color: 'var(--green)' },
-                        { label: 'Total Project Clicks', value: analytics.total_project_clicks ?? 0, icon: '🔗', color: 'var(--orange)' },
+                        { label: 'Portfolio Visits', value: analytics.site_visits ?? 0, color: 'var(--accent)' },
+                        { label: 'Resume Views', value: analytics.resume_views ?? 0, color: 'var(--accent)' },
+                        { label: 'Resume Downloads', value: analytics.resume_downloads ?? 0, color: 'var(--text)' },
+                        { label: 'Contact Submissions', value: analytics.contact_submissions ?? 0, color: 'var(--green)' },
+                        { label: 'Total Project Clicks', value: analytics.total_project_clicks ?? 0, color: 'var(--orange)' },
                       ].map(stat => (
-                        <div key={stat.label} className="card" style={{ padding: '18px 20px', textAlign: 'center' }}>
-                          <div style={{ fontSize: '1.4rem', marginBottom: 6 }}>{stat.icon}</div>
-                          <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.8rem', fontWeight: 800, color: stat.color, lineHeight: 1 }}>
+                        <div key={stat.label} className="card" style={{ padding: '14px 16px', textAlign: 'center' }}>
+                          <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.6rem', fontWeight: 800, color: stat.color, lineHeight: 1 }}>
                             {stat.value}
                           </div>
-                          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.68rem', color: 'var(--text-3)', marginTop: 6, letterSpacing: '0.05em' }}>
+                          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.62rem', color: 'var(--text-3)', marginTop: 6, letterSpacing: '0.05em' }}>
                             {stat.label.toUpperCase()}
                           </div>
                         </div>

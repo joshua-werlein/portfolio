@@ -527,6 +527,14 @@ Return a JSON object with exactly these fields:
       if (path === '/track' && request.method === 'POST') {
         const { event, project } = parseBody() || {}
         try {
+          if (event === 'site_visit') {
+            const current = await env.ANALYTICS.get('site_visits')
+            await env.ANALYTICS.put('site_visits', String((parseInt(current) || 0) + 1))
+          }
+          if (event === 'resume_view') {
+            const current = await env.ANALYTICS.get('resume_views')
+            await env.ANALYTICS.put('resume_views', String((parseInt(current) || 0) + 1))
+          }
           if (event === 'resume_download') {
             const current = await env.ANALYTICS.get('resume_downloads')
             await env.ANALYTICS.put('resume_downloads', String((parseInt(current) || 0) + 1))
@@ -546,10 +554,12 @@ Return a JSON object with exactly these fields:
           return withCors(json({ error: 'Unauthorized' }, 401), cors)
         }
 
-        const [resumeDownloads, contactSubmissions, analyzeCount] = await Promise.all([
+        const [resumeDownloads, contactSubmissions, analyzeCount, siteVisits, resumeViews] = await Promise.all([
           env.ANALYTICS.get('resume_downloads'),
           env.ANALYTICS.get('contact_submissions'),
           env.ANALYTICS.get('analyze_count'),
+          env.ANALYTICS.get('site_visits'),
+          env.ANALYTICS.get('resume_views'),
         ])
 
         const clickCounts = await Promise.all(
@@ -570,6 +580,8 @@ Return a JSON object with exactly these fields:
         })
 
         return withCors(json({
+          site_visits:          parseInt(siteVisits)         || 0,
+          resume_views:         parseInt(resumeViews)        || 0,
           resume_downloads:     parseInt(resumeDownloads)    || 0,
           contact_submissions:  parseInt(contactSubmissions) || 0,
           analyze_count:        parseInt(analyzeCount)       || 0,
