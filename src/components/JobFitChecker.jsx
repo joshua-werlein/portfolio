@@ -125,7 +125,7 @@ export default function JobFitChecker() {
   return (
     <section id="jobfit">
       <div className="container">
-        <div className="section-label">AI Tool</div>
+        <div className="section-label">04 / Job Fit Checker</div>
         <h2 className="section-title">Job Fit Checker</h2>
         <p className="section-sub">
           Paste any job description and get an instant AI analysis of how Joshua's skills and experience align with the role.

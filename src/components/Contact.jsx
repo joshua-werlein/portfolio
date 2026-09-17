@@ -72,7 +72,7 @@ export default function Contact() {
   return (
     <section id="contact">
       <div className="container">
-        <div className="section-label">Contact</div>
+        <div className="section-label">05 / Contact</div>
         <h2 className="section-title">Get In Touch</h2>
         <p className="section-sub">
           Open to remote full-time roles, contract work, and interesting conversations.
