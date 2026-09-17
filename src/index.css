@@ -92,24 +92,10 @@ html, body {
   transition: background var(--transition), color var(--transition);
 }
 
-/* Subtle grid texture */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-image:
-    linear-gradient(var(--border) 1px, transparent 1px),
-    linear-gradient(90deg, var(--border) 1px, transparent 1px);
-  background-size: 40px 40px;
-  pointer-events: none;
-  z-index: 0;
-  opacity: 0.5;
-}
-
 a { color: var(--accent); text-decoration: none; transition: opacity var(--transition); }
 a:hover { opacity: 0.8; }
 img { max-width: 100%; display: block; }
-button { cursor: pointer; font-family: var(--font-body); border: none; outline: none; }
+button { cursor: pointer; font-family: var(--font-body); border: none; }
 ul { list-style: none; }
 
 /* ── Typography ───────────────────────────────────── */
@@ -140,7 +126,7 @@ section {
 .section-label {
   font-family: var(--font-mono);
   font-size: 0.75rem;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--accent);
   display: flex;
@@ -154,6 +140,7 @@ section {
   width: 24px;
   height: 1px;
   background: var(--accent);
+  flex-shrink: 0;
 }
 
 .section-title {
@@ -241,8 +228,8 @@ section {
 }
 
 .theme-toggle {
-  width: 36px;
-  height: 36px;
+  width: 44px;
+  height: 44px;
   border-radius: 8px;
   background: var(--surface-2);
   border: 1px solid var(--border);
@@ -252,12 +239,72 @@ section {
   color: var(--text-2);
   font-size: 1rem;
   transition: all var(--transition);
+  flex-shrink: 0;
 }
 
 .theme-toggle:hover {
   background: var(--surface);
   border-color: var(--border-2);
   color: var(--text);
+}
+
+/* ── Mobile hamburger ─────────────────────────────── */
+.nav-hamburger {
+  display: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  align-items: center;
+  justify-content: center;
+  color: var(--text);
+  flex-shrink: 0;
+  transition: all var(--transition);
+}
+
+.nav-hamburger:hover {
+  background: var(--surface);
+  border-color: var(--border-2);
+}
+
+/* ── Mobile menu ─────────────────────────────────── */
+.mobile-menu {
+  position: fixed;
+  top: 64px;
+  left: 0;
+  right: 0;
+  background: var(--bg-2);
+  border-bottom: 1px solid var(--border);
+  z-index: 999;
+  padding: 16px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+
+.mobile-menu a, .mobile-menu button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 12px 16px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-2);
+  border-radius: var(--radius);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-body);
+  transition: all var(--transition);
+}
+
+.mobile-menu a:hover, .mobile-menu button:hover {
+  color: var(--text);
+  background: var(--surface);
+  opacity: 1;
 }
 
 /* ── Buttons ──────────────────────────────────────── */
@@ -272,6 +319,7 @@ section {
   font-family: var(--font-body);
   transition: all var(--transition);
   letter-spacing: 0.01em;
+  min-height: 40px;
 }
 
 .btn-primary {
@@ -315,6 +363,19 @@ section {
   color: var(--text);
   background: var(--surface-2);
   opacity: 1;
+}
+
+/* ── Focus visible ────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
 }
 
 /* ── Cards ────────────────────────────────────────── */
@@ -426,10 +487,26 @@ section {
 /* ── Responsive ───────────────────────────────────── */
 @media (max-width: 768px) {
   .nav-links { display: none; }
+  .nav-hamburger { display: flex; }
   section { padding: 72px 0; }
   .container { padding: 0 16px; }
 }
 
 @media (max-width: 480px) {
   section { padding: 56px 0; }
+}
+
+/* ── Reduced motion ───────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .status-dot { animation: none; }
+  .animate-fade-up {
+    opacity: 1;
+    animation: none;
+  }
 }

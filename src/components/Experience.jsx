@@ -96,10 +96,10 @@ export default function Experience() {
   return (
     <section id="experience">
       <div className="container">
-        <div className="section-label">Experience</div>
-        <h2 className="section-title">What I've Built</h2>
+        <div className="section-label">Client Work</div>
+        <h2 className="section-title">Client Engagements</h2>
         <p className="section-sub">
-          Production systems shipped to real users — not academic projects.
+          Contract work delivered end-to-end for real clients.
         </p>
  
         <div style={{ position: 'relative' }}>
@@ -134,10 +134,9 @@ export default function Experience() {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  fontSize: '1rem',
                   zIndex: 1,
                 }}>
-                  {exp.id === 'freelance' ? '⚡' : '📱'}
+                  <div style={{ width: 10, height: 10, borderRadius: '50%', background: 'var(--accent)' }} />
                 </div>
  
                 {/* Card */}

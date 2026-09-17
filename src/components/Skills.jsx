@@ -12,7 +12,7 @@ const SKILL_GROUPS = [
   },
   {
     category: 'Android',
-    icon: '📱',
+    icon: null,
     skills: [
       { name: 'Android SDK', level: 3 },
       { name: 'Room Database', level: 3 },
@@ -23,7 +23,7 @@ const SKILL_GROUPS = [
   },
   {
     category: 'Web & Serverless',
-    icon: '☁',
+    icon: null,
     skills: [
       { name: 'Cloudflare Workers', level: 3 },
       { name: 'Cloudflare R2', level: 3 },
@@ -36,7 +36,7 @@ const SKILL_GROUPS = [
   },
   {
     category: 'Cloud & DevOps',
-    icon: '⚙',
+    icon: null,
     skills: [
       { name: 'AWS (CCP)', level: 2 },
       { name: 'Cloudflare Pages', level: 3 },
@@ -47,7 +47,7 @@ const SKILL_GROUPS = [
   },
   {
     category: 'Security',
-    icon: '🔒',
+    icon: null,
     skills: [
       { name: 'Turnstile CAPTCHA', level: 3 },
       { name: 'Rate Limiting', level: 3 },
@@ -64,7 +64,7 @@ export default function Skills() {
   return (
     <section id="skills">
       <div className="container">
-        <div className="section-label">Skills</div>
+        <div className="section-label">02 / Technical Capabilities</div>
         <h2 className="section-title">Technical Stack</h2>
         <p className="section-sub">
           Tools I've used in production systems — not just tutorials.
@@ -122,7 +122,7 @@ export default function Skills() {
                 paddingBottom: 14,
                 borderBottom: '1px solid var(--border)',
               }}>
-                <span style={{ fontSize: '1rem' }}>{group.icon}</span>
+                {group.icon && <span style={{ fontSize: '1rem' }}>{group.icon}</span>}
                 <span style={{
                   fontFamily: 'var(--font-display)',
                   fontWeight: 700,

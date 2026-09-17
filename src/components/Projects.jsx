@@ -157,12 +157,12 @@ export default function Projects() {
   }
  
   return (
-    <section id="projects">
+    <section id="work">
       <div className="container">
-        <div className="section-label">Projects</div>
-        <h2 className="section-title">Things I've Shipped</h2>
+        <div className="section-label">01 / Selected Work</div>
+        <h2 className="section-title">Production Systems</h2>
         <p className="section-sub">
-          Production deployments with real users — each one owned start to finish.
+          Five production client platforms and a published Android app — each owned start to finish.
         </p>
  
         <div style={{
@@ -228,7 +228,7 @@ export default function Projects() {
                   color: 'var(--text-2)',
                   lineHeight: 1.5,
                 }}>
-                  📌 {project.impact}
+                  {project.impact}
                 </div>
  
                 {/* Description */}

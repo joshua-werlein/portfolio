@@ -7,40 +7,43 @@ import Skills from './components/Skills'
 import JobFitChecker from './components/JobFitChecker'
 import Contact from './components/Contact'
 import AdminPanel from './components/AdminPanel'
- 
+
 const WORKER = 'https://api.joshuawerlein.com'
- 
+
 export { WORKER }
- 
+
 export default function App() {
-  const [theme, setTheme] = useState('dark')
+  const [theme, setTheme] = useState(() => localStorage.getItem('portfolio-theme') || 'dark')
   const [scrolled, setScrolled] = useState(false)
   const [adminOpen, setAdminOpen] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const logoClickCount = useRef(0)
   const logoClickTimer = useRef(null)
- 
-  // Theme persistence
+
   useEffect(() => {
-    const saved = localStorage.getItem('portfolio-theme') || 'dark'
-    setTheme(saved)
-    document.documentElement.setAttribute('data-theme', saved)
-  }, [])
- 
+    document.documentElement.setAttribute('data-theme', theme)
+  }, [theme])
+
   const toggleTheme = () => {
     const next = theme === 'dark' ? 'light' : 'dark'
     setTheme(next)
     document.documentElement.setAttribute('data-theme', next)
     localStorage.setItem('portfolio-theme', next)
   }
- 
-  // Navbar scroll effect
+
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20)
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
- 
+
+  // Close mobile menu on scroll
+  useEffect(() => {
+    const onScroll = () => { if (mobileMenuOpen) setMobileMenuOpen(false) }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [mobileMenuOpen])
+
   // Hidden admin: 5 rapid clicks on logo
   const handleLogoClick = () => {
     logoClickCount.current += 1
@@ -54,89 +57,110 @@ export default function App() {
       }, 1500)
     }
   }
- 
+
   const scrollTo = (id) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
     setMobileMenuOpen(false)
   }
- 
-  const navLinks = [
-    { label: 'About',      id: 'about' },
-    { label: 'Experience', id: 'experience' },
-    { label: 'Projects',   id: 'projects' },
-    { label: 'Skills',     id: 'skills' },
-    { label: 'Job Fit',    id: 'jobfit' },
-    { label: 'Contact',    id: 'contact' },
-  ]
- 
+
   return (
     <>
       {/* Navbar */}
-      <nav className={`navbar${scrolled ? ' scrolled' : ''}`}>
+      <nav className={`navbar${scrolled ? ' scrolled' : ''}`} aria-label="Primary navigation">
         <div className="navbar-inner">
           <div
             className="nav-logo"
             onClick={handleLogoClick}
             title="Joshua Werlein"
+            role="button"
+            tabIndex={0}
+            onKeyDown={e => e.key === 'Enter' && handleLogoClick()}
+            aria-label="Joshua Werlein — home"
           >
             JW<span>.</span>
           </div>
- 
-          <ul className="nav-links">
-            {navLinks.map(l => (
-              <li key={l.id}>
-                <a href={`#${l.id}`} onClick={(e) => { e.preventDefault(); scrollTo(l.id); }}>
-                  {l.label}
-                </a>
-              </li>
-            ))}
+
+          <ul className="nav-links" role="list">
+            <li>
+              <a href="#work" onClick={(e) => { e.preventDefault(); scrollTo('work') }}>
+                Work
+              </a>
+            </li>
+            <li>
+              <a href="#background" onClick={(e) => { e.preventDefault(); scrollTo('background') }}>
+                About
+              </a>
+            </li>
+            <li>
+              <a href="/resume">Resume</a>
+            </li>
+            <li>
+              <a href="#contact" onClick={(e) => { e.preventDefault(); scrollTo('contact') }}>
+                Contact
+              </a>
+            </li>
           </ul>
- 
+
           <div className="nav-actions">
             <button
               className="theme-toggle"
               onClick={toggleTheme}
-              aria-label="Toggle theme"
+              aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
               title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
             >
               {theme === 'dark' ? '☀️' : '🌙'}
             </button>
-            <a
-              href="/Joshua-Werlein_Resume.pdf"
-              className="btn btn-primary"
-              style={{ padding: '8px 16px', fontSize: '0.8rem' }}
-              onClick={() => {
-                fetch(`${WORKER}/track`, {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ event: 'resume_download' }),
-                }).catch(() => {})
-              }}
-              download="Joshua-Werlein_Resume.pdf"
+            <button
+              className="nav-hamburger"
+              onClick={() => setMobileMenuOpen(o => !o)}
+              aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
+              aria-expanded={mobileMenuOpen}
+              aria-controls="mobile-menu"
             >
-              Resume ↓
-            </a>
+              {mobileMenuOpen ? (
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              ) : (
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                  <line x1="3" y1="6" x2="21" y2="6" />
+                  <line x1="3" y1="12" x2="21" y2="12" />
+                  <line x1="3" y1="18" x2="21" y2="18" />
+                </svg>
+              )}
+            </button>
           </div>
         </div>
       </nav>
- 
+
+      {/* Mobile menu */}
+      {mobileMenuOpen && (
+        <nav id="mobile-menu" className="mobile-menu" aria-label="Mobile navigation">
+          <button onClick={() => scrollTo('work')}>Work</button>
+          <button onClick={() => scrollTo('background')}>About</button>
+          <a href="/resume" onClick={() => setMobileMenuOpen(false)}>Resume</a>
+          <button onClick={() => scrollTo('contact')}>Contact</button>
+        </nav>
+      )}
+
       {/* Page Sections */}
       <main>
         <Hero onScrollTo={scrollTo} />
-        <div className="divider" />
-        <About />
-        <div className="divider" />
-        <Experience />
         <div className="divider" />
         <Projects />
         <div className="divider" />
         <Skills />
         <div className="divider" />
+        <About />
+        <div className="divider" />
+        <Experience />
+        <div className="divider" />
         <JobFitChecker />
         <div className="divider" />
         <Contact />
       </main>
- 
+
       {/* Footer */}
       <footer style={{
         borderTop: '1px solid var(--border)',
@@ -157,7 +181,7 @@ export default function App() {
           </div>
         </div>
       </footer>
- 
+
       {/* Admin Panel */}
       {adminOpen && (
         <AdminPanel

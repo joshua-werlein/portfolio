@@ -20,17 +20,17 @@ export default function About() {
   ]
  
   const facts = [
-    { label: 'Location', value: 'Mondovi, WI', icon: '📍' },
-    { label: 'Availability', value: 'Remote — Immediate', icon: '🟢' },
-    { label: 'Focus', value: 'Full Stack / Android', icon: '⚡' },
-    { label: 'Email', value: 'jjwerlein@gmail.com', icon: '✉️', link: 'mailto:jjwerlein@gmail.com' },
+    { label: 'Location', value: 'Mondovi, WI' },
+    { label: 'Availability', value: 'Remote — Immediate' },
+    { label: 'Focus', value: 'Full Stack / Android' },
+    { label: 'Email', value: 'jjwerlein@gmail.com', link: 'mailto:jjwerlein@gmail.com' },
   ]
  
   return (
-    <section id="about">
+    <section id="background">
       <div className="container">
-        <div className="section-label">About</div>
-        <h2 className="section-title">Who I Am</h2>
+        <div className="section-label">03 / Background</div>
+        <h2 className="section-title">Background</h2>
  
         <div style={{
           display: 'grid',
@@ -74,7 +74,7 @@ export default function About() {
                   padding: '12px 16px',
                 }}>
                   <div style={{ fontSize: '0.72rem', fontFamily: 'var(--font-mono)', color: 'var(--text-3)', marginBottom: 4, letterSpacing: '0.05em' }}>
-                    {f.icon} {f.label.toUpperCase()}
+                    {f.label.toUpperCase()}
                   </div>
                   {f.link ? (
                     <a href={f.link} style={{ fontSize: '0.88rem', fontWeight: 500, color: 'var(--accent)' }}>
@@ -152,13 +152,13 @@ export default function About() {
                 ))}
               </div>
  
-              {/* Currently learning */}
+              {/* Currently exploring */}
               <div style={{ marginTop: 24, padding: '16px 20px', background: 'var(--accent-dim)', border: '1px solid rgba(0,229,255,0.15)', borderRadius: 'var(--radius)' }}>
                 <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: 'var(--accent)', letterSpacing: '0.08em', marginBottom: 8 }}>
-                  CURRENTLY LEARNING
+                  CURRENTLY EXPLORING
                 </div>
                 <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                  {['React', 'Node.js', 'TypeScript'].map(t => (
+                  {['AI/LLM APIs', 'Durable Objects'].map(t => (
                     <span key={t} className="tag tag-accent">{t}</span>
                   ))}
                 </div>
