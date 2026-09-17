@@ -1,40 +1,41 @@
 # Joshua Werlein
 
-> Full stack software engineer based in Mondovi, Wisconsin. Building production Android apps, serverless APIs, and modern web platforms with a focus on ownership from first commit to live deployment. Open to remote opportunities.
+> Full-stack software engineer based in Mondovi, Wisconsin. Building production web applications and infrastructure for real businesses. Open to remote opportunities.
 
 I hold a B.S. in Software Engineering from Western Governors University and work across the full stack — TypeScript and React on the frontend, Cloudflare Workers with D1, KV, and R2 for edge platforms, and Java for native Android applications.
 
 ## Portfolio Sections
 
-- [About](https://joshuawerlein.com/#about): Background, education, and how I approach software.
-- [Experience](https://joshuawerlein.com/#experience): Professional history and production client work.
-- [Projects](https://joshuawerlein.com/#projects): Published apps and platforms I've built end-to-end.
-- [Skills](https://joshuawerlein.com/#skills): Languages, frameworks, and tools I work with.
-- [Job Fit](https://joshuawerlein.com/#jobfit): Interactive tool for matching my profile against a role.
+- [Selected Work](https://joshuawerlein.com/#work): Three featured case studies (Grayz'n Buffalo, Best By Manager, KIL Construction) plus a secondary grid of additional projects.
+- [Technical Capabilities](https://joshuawerlein.com/#skills): Languages, frameworks, and tools organized by category with Production / Proficient / Familiar levels.
+- [Background](https://joshuawerlein.com/#background): Career history, education, and certifications.
+- [Job Fit](https://joshuawerlein.com/#jobfit): Interactive AI tool for matching my profile against a job description.
 - [Contact](https://joshuawerlein.com/#contact): Direct message form.
+- [Resume](https://joshuawerlein.com/resume): Browser-readable resume with full employment history, skills, education, and certifications.
 
 ## Featured Projects
 
 - [Grayz'n Buffalo Bar & Grill](https://grayznbuffalo.com): Production restaurant platform built with Astro and Cloudflare Workers/Pages. Uses D1, KV, and R2 for menu content, recurring weekly specials, sessions, and managed media; includes a scheduled Facebook Graph Worker with cached, last-known-good feed behavior and Turnstile/Resend contact handling. Source: [github.com/joshua-werlein/grayzn-buffalo](https://github.com/joshua-werlein/grayzn-buffalo).
 
-- [Arkham Enterprises](https://www.arkhamsolar.com): Live production marketing and lead-gen site for a solar and construction company. React SPA served from a Cloudflare Worker with multi-step quote-request forms, Resend delivery, deep-linked service context, structured metadata, and accessibility-focused routing. Source: [github.com/joshua-werlein/arkham-solar](https://github.com/joshua-werlein/arkham-solar).
+- [Best By Manager](https://play.google.com/store/apps/details?id=com.bestbymanager.app): Published Android inventory app for shared-device retail and food-service workflows. Uses Room/SQLite, ZXing barcode scanning, local expiration alerts, and Owner/Admin/Employee access controls with biometric and PIN authentication. Source: [github.com/joshua-werlein/BestByManager](https://github.com/joshua-werlein/BestByManager).
 
-- [Best By Manager](https://play.google.com/store/apps/details?id=com.bestbymanager.app): Published Android inventory app for shared-device retail and food-service workflows. Uses Room/SQLite, ZXing barcode scanning, local expiration alerts, and Owner/Admin/Employee access controls. Source: [github.com/joshua-werlein/BestByManager](https://github.com/joshua-werlein/BestByManager).
-
-- [KIL Construction](https://kilcon.work): Production Astro/Cloudflare platform with R2-backed project media, review moderation, secured admin tooling, and Worker-backed business workflows. Source: [github.com/joshua-werlein/kilConstruction](https://github.com/joshua-werlein/kilConstruction).
+- [KIL Construction](https://kilcon.work): Production Astro/Cloudflare platform with signed cookie sessions, Turnstile CAPTCHA, R2-backed project media, review moderation, and secured admin tooling. Source: [github.com/joshua-werlein/kilConstruction](https://github.com/joshua-werlein/kilConstruction).
 
 - [Friends of Lake Henry](https://friendsoflakehenry.com): Production nonprofit platform using Astro and Cloudflare services for events, raffle operations, donor recognition, and moderated community photo submissions. Source: [github.com/joshua-werlein/friends-of-lake-henry](https://github.com/joshua-werlein/friends-of-lake-henry).
 
-- [Blair Sportsmen's Club](https://blairsportsmensclub.com): Event and reservation platform with a D1-backed availability calendar, reservation requests, magic-link administration, and trap-league scoring.
+- [Blair Sportsmen's Club](https://blairsportsmensclub.com): Event and reservation platform with a D1-backed availability calendar, reservation requests, and trap-league scoring.
+
+- [Arkham Enterprises](https://www.arkhamsolar.com): Live production marketing and lead-gen site for a solar and construction company. React SPA served from a Cloudflare Worker with multi-step quote-request forms, Resend delivery, deep-linked service context, structured metadata, and accessibility-focused routing. Source: [github.com/joshua-werlein/arkham-solar](https://github.com/joshua-werlein/arkham-solar).
 
 ## External Links
 
 - [GitHub](https://github.com/joshua-werlein): Open source contributions and portfolio repositories.
 - [LinkedIn](https://www.linkedin.com/in/joshua-werlein): Professional profile and contact.
+- [Resume (HTML)](https://joshuawerlein.com/resume): Browser-readable resume page with employment history, skills, education, and certifications.
 - [Resume (PDF)](https://joshuawerlein.com/Joshua-Werlein_Resume.pdf): Direct download of the current full-stack resume.
 
 ## Site Information
 
 - Site source: [github.com/joshua-werlein/portfolio](https://github.com/joshua-werlein/portfolio)
-- Stack: React 18, Vite, Cloudflare Pages + Workers
-- Status: Actively maintained; open to remote junior and full stack software engineering opportunities.
+- Stack: React 19, Vite, Cloudflare Pages + Workers
+- Status: Actively maintained; open to remote software engineering opportunities.
