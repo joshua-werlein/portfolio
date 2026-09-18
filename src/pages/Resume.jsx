@@ -185,7 +185,7 @@ export default function Resume() {
           <div className="r-contact-list">
             <a href="mailto:jjwerlein@gmail.com" className="r-contact-item">jjwerlein@gmail.com</a>
             <span className="r-sep">·</span>
-            <span className="r-contact-item">Mondovi, WI — Remote Ready</span>
+            <span className="r-contact-item">Mondovi, WI</span>
             <span className="r-sep">·</span>
             <a href="https://linkedin.com/in/joshua-werlein" target="_blank" rel="noreferrer" className="r-contact-item">linkedin.com/in/joshua-werlein</a>
             <span className="r-sep">·</span>
@@ -314,7 +314,7 @@ export default function Resume() {
 
         /* ── Document ── */
         .r-doc {
-          max-width: 760px;
+          max-width: 920px;
           margin: 0 auto;
           padding: 80px 24px 80px;
         }
