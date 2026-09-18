@@ -137,7 +137,7 @@ export default function Resume() {
       <nav className={`navbar${scrolled ? ' scrolled' : ''}`} aria-label="Resume navigation">
         <div className="navbar-inner">
           <a href="/" className="nav-logo" aria-label="Joshua Werlein — back to portfolio">
-            JW<span>.</span>
+            JW
           </a>
           <a
             href="/"
