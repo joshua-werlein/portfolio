@@ -96,13 +96,13 @@ html, body {
 
 @keyframes grid-arcade {
   0%, 100% {
-    filter: hue-rotate(0deg)   brightness(0.90);
+    filter: hue-rotate(0deg)   brightness(0.75);
   }
   33% {
-    filter: hue-rotate(120deg) brightness(1.00);
+    filter: hue-rotate(120deg) brightness(0.85);
   }
   66% {
-    filter: hue-rotate(240deg) brightness(1.00);
+    filter: hue-rotate(240deg) brightness(0.85);
   }
 }
 
@@ -116,7 +116,7 @@ body::before {
     linear-gradient(var(--grid-line) 1px, transparent 1px),
     linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
   background-size: 48px 48px;
-  opacity: 0.30;
+  opacity: 0.18;
   animation: grid-arcade 10s linear infinite;
 }
 
@@ -128,7 +128,7 @@ body::before {
   body::before {
     animation: none;
     filter: none;
-    opacity: 0.30;
+    opacity: 0.18;
   }
   [data-theme="light"] body::before {
     opacity: 0.30;
