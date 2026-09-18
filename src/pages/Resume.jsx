@@ -174,6 +174,7 @@ export default function Resume() {
       </nav>
 
       {/* Resume document */}
+      <div className="r-doc-outer">
       <main className="r-doc" aria-label="Resume">
 
         {/* Header */}
@@ -305,6 +306,7 @@ export default function Resume() {
         </div>
 
       </main>
+      </div>
 
       <style>{`
         .r-page {
@@ -312,11 +314,19 @@ export default function Resume() {
           color: var(--text);
         }
 
-        /* ── Document ── */
-        .r-doc {
+        /* ── Document outer (centering + navbar offset) ── */
+        .r-doc-outer {
           max-width: 920px;
           margin: 0 auto;
           padding: 80px 24px 80px;
+        }
+
+        /* ── Document surface ── */
+        .r-doc {
+          background: var(--surface);
+          border: 1px solid var(--border);
+          border-radius: var(--radius-lg);
+          padding: 48px;
         }
 
         /* ── Header ── */
@@ -499,8 +509,15 @@ export default function Resume() {
 
           body::before { display: none !important; }
 
-          .r-doc {
+          .r-doc-outer {
             max-width: 100% !important;
+            padding: 0 !important;
+          }
+
+          .r-doc {
+            background: white !important;
+            border: none !important;
+            border-radius: 0 !important;
             padding: 0 !important;
           }
 
@@ -521,7 +538,8 @@ export default function Resume() {
 
         /* ── Mobile ── */
         @media (max-width: 600px) {
-          .r-doc { padding: 80px 16px 48px; }
+          .r-doc-outer { padding: 80px 12px 48px; }
+          .r-doc { padding: 28px 20px; }
           .r-contact-list { gap: 4px; }
           .r-sep { display: none; }
           .r-contact-item { display: block; width: 100%; }
