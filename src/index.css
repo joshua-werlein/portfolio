@@ -49,6 +49,7 @@
   --tag-orange:  #F6821F;
   --tag-yellow:  #F4A100;
   --tag-blue:    #3b9eff;
+  --grid-line:   rgba(255,255,255,0.22);
 }
 
 [data-theme="light"] {
@@ -71,6 +72,7 @@
   --tag-orange:  #a05208;
   --tag-yellow:  #996300;
   --tag-blue:    #0059a3;
+  --grid-line:   rgba(0,0,0,0.18);
 }
 
 /* ── Reset ────────────────────────────────────────── */
@@ -92,6 +94,11 @@ html, body {
   transition: background var(--transition), color var(--transition);
 }
 
+@keyframes grid-pulse {
+  0%, 100% { opacity: 0.7; }
+  50%       { opacity: 1;   }
+}
+
 body::before {
   content: '';
   position: fixed;
@@ -99,10 +106,18 @@ body::before {
   pointer-events: none;
   z-index: 0;
   background-image:
-    linear-gradient(var(--border) 1px, transparent 1px),
-    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
   background-size: 48px 48px;
-  opacity: 0.18;
+  opacity: 0.7;
+  animation: grid-pulse 7s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body::before {
+    animation: none;
+    opacity: 0.85;
+  }
 }
 
 @media print {
