@@ -90,7 +90,7 @@ export default function App() {
             onKeyDown={e => e.key === 'Enter' && handleLogoClick()}
             aria-label="Joshua Werlein — home"
           >
-            JW<span>.</span>
+            JW
           </div>
 
           <ul className="nav-links" role="list">
