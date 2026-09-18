@@ -146,6 +146,7 @@ export default function Hero({ onScrollTo }) {
       <style>{`
         .hero-text-col {
           position: relative;
+          isolation: isolate;
         }
 
         .hero-text-col::before {
@@ -153,11 +154,17 @@ export default function Hero({ onScrollTo }) {
           position: absolute;
           inset: -8px -40px -8px -40px;
           pointer-events: none;
+          z-index: 0;
           background: radial-gradient(ellipse 85% 90% at 0% 50%, #0a0a0f 35%, rgba(10,10,15,0) 100%);
         }
 
         [data-theme="light"] .hero-text-col::before {
           background: radial-gradient(ellipse 85% 90% at 0% 50%, #f4f4f8 35%, rgba(244,244,248,0) 100%);
+        }
+
+        .hero-text-col > * {
+          position: relative;
+          z-index: 1;
         }
 
         @media (max-width: 640px) {
