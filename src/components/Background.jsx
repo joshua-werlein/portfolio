@@ -71,8 +71,16 @@ export default function Background() {
         <div className="section-label">03 / Background</div>
         <h2 id="background-heading" className="section-title">Background</h2>
 
+        {/* Panel */}
+        <div className="background-panel" style={{
+          background: 'var(--surface)',
+          border: '1px solid var(--border)',
+          borderRadius: 'var(--radius-lg)',
+          padding: '36px 40px',
+        }}>
+
         {/* Bio */}
-        <div style={{ maxWidth: 680, marginBottom: 56 }}>
+        <div style={{ maxWidth: 680, marginBottom: 48 }}>
           <p style={{ color: 'var(--text-2)', lineHeight: 1.8, marginBottom: 16, fontSize: '1.05rem' }}>
             Software engineer based in western Wisconsin with a focus on shipping production-quality systems
             across the full stack — Android applications, serverless web APIs, and client platforms built on
@@ -136,7 +144,7 @@ export default function Background() {
                       width: 22,
                       height: 22,
                       borderRadius: '50%',
-                      background: 'var(--surface)',
+                      background: 'var(--bg)',
                       border: '2px solid var(--border-2)',
                       display: 'flex',
                       alignItems: 'center',
@@ -257,12 +265,19 @@ export default function Background() {
             </div>
           </div>
         </div>
+
+        </div>{/* end panel */}
       </div>
 
       <style>{`
         @media (max-width: 900px) {
           .background-grid {
             grid-template-columns: 1fr !important;
+          }
+        }
+        @media (max-width: 600px) {
+          .background-panel {
+            padding: 24px 20px !important;
           }
         }
       `}</style>
