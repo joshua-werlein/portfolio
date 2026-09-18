@@ -2,7 +2,7 @@ import { WORKER } from '../App'
 
 export default function Hero({ onScrollTo }) {
   return (
-    <section id="hero" style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', paddingTop: 80 }}>
+    <section id="hero" style={{ paddingTop: 120, paddingBottom: 96 }}>
       <div className="container">
         <div
           style={{
@@ -150,6 +150,10 @@ export default function Hero({ onScrollTo }) {
           }
           .hero-photo-wrap {
             display: none;
+          }
+          #hero {
+            padding-top: 96px !important;
+            padding-bottom: 64px !important;
           }
         }
       `}</style>
