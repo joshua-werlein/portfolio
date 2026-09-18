@@ -56,6 +56,9 @@ export default function App() {
 
   // Hidden admin: 5 rapid clicks on logo
   const handleLogoClick = () => {
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    window.scrollTo({ top: 0, behavior: reduced ? 'instant' : 'smooth' })
+
     logoClickCount.current += 1
     clearTimeout(logoClickTimer.current)
     if (logoClickCount.current >= 5) {
