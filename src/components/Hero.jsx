@@ -14,7 +14,7 @@ export default function Hero({ onScrollTo }) {
           className="hero-grid"
         >
           {/* Left: Text */}
-          <div>
+          <div className="hero-text-col">
             {/* Status badge */}
             <div style={{
               display: 'inline-flex',
@@ -144,7 +144,30 @@ export default function Hero({ onScrollTo }) {
       </div>
 
       <style>{`
+        .hero-text-col {
+          position: relative;
+        }
+
+        .hero-text-col::before {
+          content: '';
+          position: absolute;
+          inset: -8px -40px -8px -40px;
+          pointer-events: none;
+          background: radial-gradient(ellipse 85% 90% at 0% 50%, #0a0a0f 35%, rgba(10,10,15,0) 100%);
+        }
+
+        [data-theme="light"] .hero-text-col::before {
+          background: radial-gradient(ellipse 85% 90% at 0% 50%, #f4f4f8 35%, rgba(244,244,248,0) 100%);
+        }
+
         @media (max-width: 640px) {
+          .hero-text-col::before {
+            inset: -8px;
+            background: #0a0a0f;
+          }
+          [data-theme="light"] .hero-text-col::before {
+            background: #f4f4f8;
+          }
           .hero-grid {
             grid-template-columns: 1fr !important;
           }
@@ -155,6 +178,10 @@ export default function Hero({ onScrollTo }) {
             padding-top: 96px !important;
             padding-bottom: 64px !important;
           }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .hero-text-col::before { transition: none; }
         }
       `}</style>
     </section>
