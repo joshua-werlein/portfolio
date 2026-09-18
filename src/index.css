@@ -124,7 +124,7 @@ body::before {
 }
 
 [data-theme="light"] body::before {
-  opacity: 0.28;
+  opacity: 0.40;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -134,7 +134,7 @@ body::before {
     opacity: 0.55;
   }
   [data-theme="light"] body::before {
-    opacity: 0.28;
+    opacity: 0.40;
   }
 }
 
