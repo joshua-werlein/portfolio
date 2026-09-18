@@ -172,17 +172,11 @@ export default function App() {
       {/* Page Sections */}
       <main>
         <Hero onScrollTo={scrollTo} />
-        <div className="divider" />
         <SelectedWork />
-        <div className="divider" />
         <Skills />
-        <div className="divider" />
         <Background />
-        <div className="divider" />
         <JobFitChecker />
-        <div className="divider" />
         <ResumeCTA />
-        <div className="divider" />
         <Contact />
       </main>
 
