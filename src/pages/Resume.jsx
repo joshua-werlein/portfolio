@@ -100,12 +100,7 @@ const CERTS = [
 export default function Resume() {
   const viewFired = useRef(false)
   const [theme, setTheme] = useState(() => localStorage.getItem('portfolio-theme') || 'dark')
-  const [controlsVisible, setControlsVisible] = useState(true)
-  const lastScrollY = useRef(0)
-  const prefersReduced = useRef(
-    typeof window !== 'undefined' &&
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  )
+  const [scrolled, setScrolled] = useState(false)
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme)
@@ -113,16 +108,7 @@ export default function Resume() {
   }, [theme])
 
   useEffect(() => {
-    if (prefersReduced.current) return
-    const onScroll = () => {
-      const y = window.scrollY
-      if (y < 60) {
-        setControlsVisible(true)
-      } else {
-        setControlsVisible(y < lastScrollY.current)
-      }
-      lastScrollY.current = y
-    }
+    const onScroll = () => setScrolled(window.scrollY > 20)
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
@@ -147,44 +133,45 @@ export default function Resume() {
 
   return (
     <div className="r-page">
-      {/* Controls */}
-      <div
-        className={`r-controls${controlsVisible ? '' : ' r-controls--hidden'}`}
-        role="navigation"
-        aria-label="Resume page controls"
-      >
-        <a href="/" className="r-back">
-          ← Back to Portfolio
-        </a>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <button
-            className="theme-toggle"
-            onClick={() => setTheme(t => t === 'dark' ? 'light' : 'dark')}
-            aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-            title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+      {/* Navbar — same visual treatment as main portfolio */}
+      <nav className={`navbar${scrolled ? ' scrolled' : ''}`} aria-label="Resume navigation">
+        <div className="navbar-inner">
+          <a href="/" className="nav-logo" aria-label="Joshua Werlein — back to portfolio">
+            JW<span>.</span>
+          </a>
+          <a
+            href="/"
             style={{
-              background: 'none',
-              border: '1px solid var(--border-2)',
-              borderRadius: 6,
-              padding: '6px 10px',
+              fontSize: '0.875rem',
+              fontWeight: 500,
               color: 'var(--text-2)',
-              fontSize: '0.85rem',
-              cursor: 'pointer',
+              letterSpacing: '0.01em',
+              transition: 'color var(--transition)',
             }}
           >
-            {theme === 'dark' ? '☀️' : '🌙'}
-          </button>
-          <a
-            href="/Joshua-Werlein_Resume.pdf"
-            download="Joshua-Werlein_Resume.pdf"
-            onClick={handleDownload}
-            className="r-download btn btn-primary"
-            style={{ fontSize: '0.85rem', padding: '8px 18px' }}
-          >
-            Download PDF ↓
+            ← Portfolio
           </a>
+          <div className="nav-actions">
+            <a
+              href="/Joshua-Werlein_Resume.pdf"
+              download="Joshua-Werlein_Resume.pdf"
+              onClick={handleDownload}
+              className="btn btn-primary"
+              style={{ fontSize: '0.8rem', padding: '8px 16px' }}
+            >
+              Download PDF ↓
+            </a>
+            <button
+              className="theme-toggle"
+              onClick={() => setTheme(t => t === 'dark' ? 'light' : 'dark')}
+              aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+              title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+            >
+              {theme === 'dark' ? '☀️' : '🌙'}
+            </button>
+          </div>
         </div>
-      </div>
+      </nav>
 
       {/* Resume document */}
       <main className="r-doc" aria-label="Resume">
@@ -322,54 +309,14 @@ export default function Resume() {
       <style>{`
         .r-page {
           min-height: 100vh;
-          background: var(--bg);
           color: var(--text);
         }
-
-        /* ── Controls bar ── */
-        .r-controls {
-          position: sticky;
-          top: 0;
-          z-index: 100;
-          background: var(--bg);
-          border-bottom: 1px solid var(--border);
-          padding: 12px 24px;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          gap: 12px;
-          -webkit-backdrop-filter: blur(12px);
-          backdrop-filter: blur(12px);
-          transition: transform 0.25s ease;
-        }
-
-        .r-controls--hidden {
-          transform: translateY(-100%);
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-          .r-controls { transition: none; }
-          .r-controls--hidden { transform: none; }
-        }
-
-        .r-back {
-          font-family: var(--font-mono);
-          font-size: 0.8rem;
-          color: var(--text-2);
-          text-decoration: none;
-          display: flex;
-          align-items: center;
-          gap: 6px;
-          transition: color 0.15s;
-        }
-
-        .r-back:hover { color: var(--text); opacity: 1; }
 
         /* ── Document ── */
         .r-doc {
           max-width: 760px;
           margin: 0 auto;
-          padding: 48px 24px 80px;
+          padding: 80px 24px 80px;
         }
 
         /* ── Header ── */
@@ -543,12 +490,14 @@ export default function Resume() {
 
         /* ── Print styles ── */
         @media print {
-          .r-controls { display: none !important; }
+          .navbar { display: none !important; }
 
-          html, .r-page {
+          html, body, .r-page {
             background: white !important;
             color: black !important;
           }
+
+          body::before { display: none !important; }
 
           .r-doc {
             max-width: 100% !important;
@@ -572,7 +521,7 @@ export default function Resume() {
 
         /* ── Mobile ── */
         @media (max-width: 600px) {
-          .r-doc { padding: 24px 16px 48px; }
+          .r-doc { padding: 80px 16px 48px; }
           .r-contact-list { gap: 4px; }
           .r-sep { display: none; }
           .r-contact-item { display: block; width: 100%; }

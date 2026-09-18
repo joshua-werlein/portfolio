@@ -105,6 +105,10 @@ body::before {
   opacity: 0.18;
 }
 
+@media print {
+  body::before { display: none !important; }
+}
+
 a { color: var(--accent); text-decoration: none; transition: opacity var(--transition); }
 a:hover { opacity: 0.8; }
 img { max-width: 100%; display: block; }

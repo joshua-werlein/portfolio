@@ -65,6 +65,16 @@
  
     <!-- ── Theme color ────────────────────────────────────────────────── -->
     <meta name="theme-color" content="#0a0a0f" />
+
+    <!-- ── Anti-flash theme init ─────────────────────────────────────── -->
+    <script>
+      (function() {
+        var t = localStorage.getItem('portfolio-theme');
+        if (t === 'light' || t === 'dark') {
+          document.documentElement.setAttribute('data-theme', t);
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
