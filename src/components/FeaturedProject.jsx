@@ -2,8 +2,9 @@ import { useState } from 'react'
 import { WORKER } from '../App'
 
 export default function FeaturedProject({ project }) {
-  const [archOpen, setArchOpen] = useState(false)
-  const archId = `arch-${project.id}`
+  const [expanded, setExpanded] = useState(false)
+  const detailId = `fp-detail-${project.id}`
+
   const handleLinkClick = () => {
     fetch(`${WORKER}/track`, {
       method: 'POST',
@@ -28,17 +29,17 @@ export default function FeaturedProject({ project }) {
       {/* Accent bar */}
       <div style={{ height: 3, background: project.typeColor }} />
 
-      {/* Header */}
+      {/* Always-visible header */}
       <div style={{
         padding: '24px 28px 20px',
-        borderBottom: '1px solid var(--border)',
+        borderBottom: expanded ? '1px solid var(--border)' : 'none',
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'flex-start',
         gap: 16,
         flexWrap: 'wrap',
       }}>
-        <div>
+        <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10, flexWrap: 'wrap' }}>
             <span style={{
               fontFamily: 'var(--font-mono)',
@@ -76,8 +77,8 @@ export default function FeaturedProject({ project }) {
           </p>
         </div>
 
-        {/* Header links */}
-        <div style={{ display: 'flex', gap: 8, flexShrink: 0, flexWrap: 'wrap' }}>
+        {/* Outbound buttons + expand toggle */}
+        <div className="fp-actions" style={{ display: 'flex', gap: 8, flexShrink: 0, flexWrap: 'wrap', alignItems: 'flex-start' }}>
           {primaryLink && (
             <a
               href={primaryLink.url}
@@ -102,62 +103,48 @@ export default function FeaturedProject({ project }) {
               {l.label} ↗
             </a>
           ))}
+          <button
+            onClick={() => setExpanded(o => !o)}
+            aria-expanded={expanded}
+            aria-controls={detailId}
+            className="btn btn-outline fp-toggle"
+            style={{ fontSize: '0.8rem', padding: '8px 16px' }}
+          >
+            {expanded ? 'Hide case study ↑' : 'View case study ↓'}
+          </button>
         </div>
       </div>
 
-      {/* Body */}
+      {/* Expandable case-study body */}
       <div
-        className="fp-body"
-        style={{
-          display: 'grid',
-          gridTemplateColumns: '1fr 280px',
-          gap: 0,
-        }}
+        id={detailId}
+        className={`fp-detail${expanded ? ' fp-detail--open' : ''}`}
       >
-        {/* Left: case study content */}
-        <div style={{ padding: '28px', borderRight: '1px solid var(--border)' }}>
-          <CaseStudyBlock label="Problem" content={project.problem} />
-          <CaseStudyBlock label="Solution" content={project.solution} />
+        <div
+          className="fp-body"
+          style={{
+            display: 'grid',
+            gridTemplateColumns: '1fr 280px',
+            gap: 0,
+          }}
+        >
+          {/* Left: case study content */}
+          <div style={{ padding: '28px', borderRight: '1px solid var(--border)' }}>
+            <CaseStudyBlock label="Problem" content={project.problem} />
+            <CaseStudyBlock label="Solution" content={project.solution} />
 
-          <div style={{ marginBottom: 24 }}>
-            <button
-              onClick={() => setArchOpen(o => !o)}
-              aria-expanded={archOpen}
-              aria-controls={archId}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 8,
-                background: 'none',
-                border: 'none',
-                padding: 0,
-                cursor: 'pointer',
-                width: '100%',
-                textAlign: 'left',
-                marginBottom: archOpen ? 10 : 0,
-              }}
-            >
-              <span style={{
+            <div style={{ marginBottom: 0 }}>
+              <div style={{
                 fontFamily: 'var(--font-mono)',
                 fontSize: '0.68rem',
                 letterSpacing: '0.12em',
                 textTransform: 'uppercase',
                 color: 'var(--text-3)',
+                marginBottom: 10,
               }}>
                 Engineering / Architecture
-              </span>
-              <span style={{
-                fontFamily: 'var(--font-mono)',
-                fontSize: '0.65rem',
-                color: 'var(--accent)',
-                marginLeft: 'auto',
-                flexShrink: 0,
-              }}>
-                {archOpen ? '▲ hide' : '▼ show'}
-              </span>
-            </button>
-            {archOpen && (
-              <ul id={archId} style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              </div>
+              <ul style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                 {project.architecture.map((item, i) => (
                   <li key={i} style={{
                     display: 'flex',
@@ -171,36 +158,55 @@ export default function FeaturedProject({ project }) {
                   </li>
                 ))}
               </ul>
-            )}
-          </div>
-        </div>
-
-        {/* Right: sidebar */}
-        <div style={{ padding: '28px', display: 'flex', flexDirection: 'column', gap: 24 }}>
-          <CaseStudyBlock label="Outcome" content={project.outcome} />
-          <CaseStudyBlock label="Ownership" content={project.ownership} />
-
-          <div>
-            <div style={{
-              fontFamily: 'var(--font-mono)',
-              fontSize: '0.68rem',
-              letterSpacing: '0.12em',
-              textTransform: 'uppercase',
-              color: 'var(--text-3)',
-              marginBottom: 10,
-            }}>
-              Technologies
             </div>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-              {project.tags.map(t => (
-                <span key={t} className="tag">{t}</span>
-              ))}
+          </div>
+
+          {/* Right: sidebar */}
+          <div style={{ padding: '28px', display: 'flex', flexDirection: 'column', gap: 24 }}>
+            <CaseStudyBlock label="Outcome" content={project.outcome} />
+            <CaseStudyBlock label="Ownership" content={project.ownership} />
+
+            <div>
+              <div style={{
+                fontFamily: 'var(--font-mono)',
+                fontSize: '0.68rem',
+                letterSpacing: '0.12em',
+                textTransform: 'uppercase',
+                color: 'var(--text-3)',
+                marginBottom: 10,
+              }}>
+                Technologies
+              </div>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                {project.tags.map(t => (
+                  <span key={t} className="tag">{t}</span>
+                ))}
+              </div>
             </div>
           </div>
         </div>
       </div>
 
       <style>{`
+        .fp-detail {
+          display: grid;
+          grid-template-rows: 0fr;
+          transition: grid-template-rows 0.3s ease;
+        }
+
+        .fp-detail > .fp-body {
+          overflow: hidden;
+          min-height: 0;
+        }
+
+        .fp-detail--open {
+          grid-template-rows: 1fr;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .fp-detail { transition: none; }
+        }
+
         @media (max-width: 768px) {
           .fp-body {
             grid-template-columns: 1fr !important;
@@ -208,6 +214,9 @@ export default function FeaturedProject({ project }) {
           .fp-body > div:first-child {
             border-right: none !important;
             border-bottom: 1px solid var(--border);
+          }
+          .fp-actions {
+            width: 100%;
           }
         }
       `}</style>
