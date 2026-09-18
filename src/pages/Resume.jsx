@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 const WORKER = 'https://api.joshuawerlein.com'
 
@@ -99,6 +99,33 @@ const CERTS = [
 
 export default function Resume() {
   const viewFired = useRef(false)
+  const [theme, setTheme] = useState(() => localStorage.getItem('portfolio-theme') || 'dark')
+  const [controlsVisible, setControlsVisible] = useState(true)
+  const lastScrollY = useRef(0)
+  const prefersReduced = useRef(
+    typeof window !== 'undefined' &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  )
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme)
+    localStorage.setItem('portfolio-theme', theme)
+  }, [theme])
+
+  useEffect(() => {
+    if (prefersReduced.current) return
+    const onScroll = () => {
+      const y = window.scrollY
+      if (y < 60) {
+        setControlsVisible(true)
+      } else {
+        setControlsVisible(y < lastScrollY.current)
+      }
+      lastScrollY.current = y
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
 
   useEffect(() => {
     if (viewFired.current) return
@@ -121,19 +148,42 @@ export default function Resume() {
   return (
     <div className="r-page">
       {/* Controls */}
-      <div className="r-controls" role="navigation" aria-label="Resume page controls">
+      <div
+        className={`r-controls${controlsVisible ? '' : ' r-controls--hidden'}`}
+        role="navigation"
+        aria-label="Resume page controls"
+      >
         <a href="/" className="r-back">
           ← Back to Portfolio
         </a>
-        <a
-          href="/Joshua-Werlein_Resume.pdf"
-          download="Joshua-Werlein_Resume.pdf"
-          onClick={handleDownload}
-          className="r-download btn btn-primary"
-          style={{ fontSize: '0.85rem', padding: '8px 18px' }}
-        >
-          Download PDF ↓
-        </a>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <button
+            className="theme-toggle"
+            onClick={() => setTheme(t => t === 'dark' ? 'light' : 'dark')}
+            aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+            title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+            style={{
+              background: 'none',
+              border: '1px solid var(--border-2)',
+              borderRadius: 6,
+              padding: '6px 10px',
+              color: 'var(--text-2)',
+              fontSize: '0.85rem',
+              cursor: 'pointer',
+            }}
+          >
+            {theme === 'dark' ? '☀️' : '🌙'}
+          </button>
+          <a
+            href="/Joshua-Werlein_Resume.pdf"
+            download="Joshua-Werlein_Resume.pdf"
+            onClick={handleDownload}
+            className="r-download btn btn-primary"
+            style={{ fontSize: '0.85rem', padding: '8px 18px' }}
+          >
+            Download PDF ↓
+          </a>
+        </div>
       </div>
 
       {/* Resume document */}
@@ -157,7 +207,7 @@ export default function Resume() {
         </header>
 
         {/* Summary */}
-        <section className="r-section" aria-labelledby="r-summary">
+        <div className="r-section" aria-labelledby="r-summary">
           <h2 id="r-summary" className="r-section-title">Summary</h2>
           <p className="r-body">
             Full-stack software engineer with production experience delivering end-to-end web platforms and a
@@ -166,10 +216,10 @@ export default function Resume() {
             lifecycle — from architecture through deployment and ongoing maintenance. Open to remote software
             engineering roles.
           </p>
-        </section>
+        </div>
 
         {/* Skills */}
-        <section className="r-section" aria-labelledby="r-skills">
+        <div className="r-section" aria-labelledby="r-skills">
           <h2 id="r-skills" className="r-section-title">Technical Skills</h2>
           <div className="r-skills-grid">
             {SKILLS.map(g => (
@@ -179,10 +229,10 @@ export default function Resume() {
               </div>
             ))}
           </div>
-        </section>
+        </div>
 
         {/* Experience */}
-        <section className="r-section" aria-labelledby="r-experience">
+        <div className="r-section" aria-labelledby="r-experience">
           <h2 id="r-experience" className="r-section-title">Client Experience</h2>
           <div className="r-entries">
             {EXPERIENCE.map(e => (
@@ -206,10 +256,10 @@ export default function Resume() {
               </div>
             ))}
           </div>
-        </section>
+        </div>
 
         {/* Projects */}
-        <section className="r-section" aria-labelledby="r-projects">
+        <div className="r-section" aria-labelledby="r-projects">
           <h2 id="r-projects" className="r-section-title">Projects</h2>
           <div className="r-entries">
             {PROJECTS.map(p => (
@@ -232,10 +282,10 @@ export default function Resume() {
               </div>
             ))}
           </div>
-        </section>
+        </div>
 
         {/* Education */}
-        <section className="r-section" aria-labelledby="r-education">
+        <div className="r-section" aria-labelledby="r-education">
           <h2 id="r-education" className="r-section-title">Education</h2>
           <div className="r-entries">
             {EDUCATION.map(e => (
@@ -250,10 +300,10 @@ export default function Resume() {
               </div>
             ))}
           </div>
-        </section>
+        </div>
 
         {/* Certifications */}
-        <section className="r-section" aria-labelledby="r-certs">
+        <div className="r-section" aria-labelledby="r-certs">
           <h2 id="r-certs" className="r-section-title">Certifications</h2>
           <div className="r-entries">
             {CERTS.map(c => (
@@ -265,7 +315,7 @@ export default function Resume() {
               </div>
             ))}
           </div>
-        </section>
+        </div>
 
       </main>
 
@@ -290,6 +340,16 @@ export default function Resume() {
           gap: 12px;
           -webkit-backdrop-filter: blur(12px);
           backdrop-filter: blur(12px);
+          transition: transform 0.25s ease;
+        }
+
+        .r-controls--hidden {
+          transform: translateY(-100%);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .r-controls { transition: none; }
+          .r-controls--hidden { transform: none; }
         }
 
         .r-back {
