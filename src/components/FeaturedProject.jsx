@@ -1,6 +1,9 @@
+import { useState } from 'react'
 import { WORKER } from '../App'
 
 export default function FeaturedProject({ project }) {
+  const [archOpen, setArchOpen] = useState(false)
+  const archId = `arch-${project.id}`
   const handleLinkClick = () => {
     fetch(`${WORKER}/track`, {
       method: 'POST',
@@ -117,30 +120,58 @@ export default function FeaturedProject({ project }) {
           <CaseStudyBlock label="Solution" content={project.solution} />
 
           <div style={{ marginBottom: 24 }}>
-            <div style={{
-              fontFamily: 'var(--font-mono)',
-              fontSize: '0.68rem',
-              letterSpacing: '0.12em',
-              textTransform: 'uppercase',
-              color: 'var(--text-3)',
-              marginBottom: 10,
-            }}>
-              Engineering / Architecture
-            </div>
-            <ul style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-              {project.architecture.map((item, i) => (
-                <li key={i} style={{
-                  display: 'flex',
-                  gap: 10,
-                  fontSize: '0.88rem',
-                  color: 'var(--text-2)',
-                  lineHeight: 1.6,
-                }}>
-                  <span style={{ color: 'var(--accent)', flexShrink: 0, marginTop: 1 }}>·</span>
-                  {item}
-                </li>
-              ))}
-            </ul>
+            <button
+              onClick={() => setArchOpen(o => !o)}
+              aria-expanded={archOpen}
+              aria-controls={archId}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 8,
+                background: 'none',
+                border: 'none',
+                padding: 0,
+                cursor: 'pointer',
+                width: '100%',
+                textAlign: 'left',
+                marginBottom: archOpen ? 10 : 0,
+              }}
+            >
+              <span style={{
+                fontFamily: 'var(--font-mono)',
+                fontSize: '0.68rem',
+                letterSpacing: '0.12em',
+                textTransform: 'uppercase',
+                color: 'var(--text-3)',
+              }}>
+                Engineering / Architecture
+              </span>
+              <span style={{
+                fontFamily: 'var(--font-mono)',
+                fontSize: '0.65rem',
+                color: 'var(--accent)',
+                marginLeft: 'auto',
+                flexShrink: 0,
+              }}>
+                {archOpen ? '▲ hide' : '▼ show'}
+              </span>
+            </button>
+            {archOpen && (
+              <ul id={archId} style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                {project.architecture.map((item, i) => (
+                  <li key={i} style={{
+                    display: 'flex',
+                    gap: 10,
+                    fontSize: '0.88rem',
+                    color: 'var(--text-2)',
+                    lineHeight: 1.6,
+                  }}>
+                    <span style={{ color: 'var(--accent)', flexShrink: 0, marginTop: 1 }}>·</span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
         </div>
 

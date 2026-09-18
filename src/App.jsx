@@ -97,8 +97,18 @@ export default function App() {
               </a>
             </li>
             <li>
+              <a href="#skills" onClick={(e) => { e.preventDefault(); scrollTo('skills') }}>
+                Skills
+              </a>
+            </li>
+            <li>
               <a href="#background" onClick={(e) => { e.preventDefault(); scrollTo('background') }}>
                 About
+              </a>
+            </li>
+            <li>
+              <a href="#jobfit" onClick={(e) => { e.preventDefault(); scrollTo('jobfit') }}>
+                Job Fit
               </a>
             </li>
             <li>
@@ -148,7 +158,9 @@ export default function App() {
       {mobileMenuOpen && (
         <nav id="mobile-menu" className="mobile-menu" aria-label="Mobile navigation">
           <button onClick={() => scrollTo('work')}>Work</button>
+          <button onClick={() => scrollTo('skills')}>Skills</button>
           <button onClick={() => scrollTo('background')}>About</button>
+          <button onClick={() => scrollTo('jobfit')}>Job Fit</button>
           <a href="/resume" onClick={() => setMobileMenuOpen(false)}>Resume</a>
           <button onClick={() => scrollTo('contact')}>Contact</button>
         </nav>
