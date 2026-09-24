@@ -9,21 +9,21 @@ const FEATURED = [
     type: 'Web Platform',
     typeColor: '#B96B2D',
     problem:
-      'A production restaurant client needed non-technical staff to manage menu content, recurring weekly specials, and images without any engineering involvement. The site also needed to surface a live Facebook feed — but fetching it in real-time during page loads risked showing nothing if the Facebook API was unavailable.',
+      'Restaurant staff needed to manage menus, specials, and media without engineering help. Facebook specials graphics meant duplicate website entry. Automation had to protect staff edits, while the public feed needed to survive API failures without blocking page loads.',
     solution:
-      'Built an Astro + Cloudflare platform with authenticated admin workflows for D1-backed menu content and R2-backed media. A separate scheduled Facebook Graph Worker caches feed and media data to KV, preserving last known-good content during refresh failures so visitors always see something.',
+      'Built an Astro + Cloudflare platform with authenticated staff admin, D1 menu and specials data, R2 media, and production analytics. A scheduled Worker uses Workers AI vision to read Facebook posters, then deterministic reconciliation assigns offers to Lunch, All Day, and Nightly while preserving staff edits.',
     architecture: [
-      'Astro frontend on Cloudflare Pages; Worker for all dynamic routes and API handling',
-      'D1-backed menu and weekly-special data with date-bound and recurring defaults for non-technical staff',
-      'KV-backed admin sessions; R2-backed media pipeline with upload and delete workflows',
-      'Scheduled Facebook Graph Worker: caches feed and media to KV, falls back to last known-good on API failure — prevents blank social sections during outages',
-      'Turnstile-protected contact delivery through Resend with production security headers and staging no-index controls',
-      'Responsive images, reduced-motion support, and keyboard-accessible interactive UI throughout',
+      'Astro on Cloudflare Pages, with Workers, D1 data, KV sessions, and R2 staff media workflows',
+      'Normalized weekly specials: recurring defaults, manual ownership locks, revision checks, and atomic D1 writes',
+      'Workers AI vision extracts same-day Facebook offers and printed service times; unchanged posts are processed once',
+      'Deterministic Lunch / All Day / Nightly reconciliation removes repeated All Day offers, in either post order',
+      'Sunday-night Monday–Sunday provisioning from recurring defaults, with Monday fallback and automation-eligible blanks',
+      'Independent public Facebook feed retains last-known-good content; Turnstile, Resend, and security headers protect public workflows',
     ],
     ownership:
-      'Sole engineer. Designed, built, deployed, and maintained the complete system — including the admin panel, scheduled Worker, and production cutover.',
-    outcome: 'Live production client platform at grayznbuffalo.com.',
-    tags: ['Astro', 'Cloudflare Workers', 'D1', 'KV', 'R2', 'Turnstile', 'Resend', 'Facebook Graph API'],
+      'Sole engineer. Designed, built, deployed, and maintain the full production platform.',
+    outcome: 'Live restaurant operations with mobile staff admin, automated specials, and production analytics.',
+    tags: ['Astro', 'Cloudflare Workers', 'D1', 'KV', 'R2', 'Workers AI', 'Turnstile', 'Resend', 'Facebook Graph API', 'GitHub Actions'],
     links: [
       { label: 'grayznbuffalo.com', url: 'https://grayznbuffalo.com', primary: true },
       { label: 'GitHub', url: 'https://github.com/joshua-werlein/grayzn-buffalo', primary: false },
