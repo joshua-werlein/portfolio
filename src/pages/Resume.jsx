@@ -19,6 +19,8 @@ const EXPERIENCE = [
     type: 'Freelance · Remote',
     bullets: [
       'Delivered an Astro + Cloudflare restaurant platform using D1, KV, and R2 for menu content, recurring weekly specials, admin sessions, and managed media.',
+      'Developed a scheduled Facebook/Workers AI pipeline that validates restaurant-specials images and applies eligible updates through guarded D1 transactions.',
+      'Designed source-version and timestamp controls so older posts cannot undo newer staff corrections; maintained cached public content during upstream failures.',
       'Built a scheduled Facebook Graph Worker that caches feed and media to KV and preserves last known-good content during refresh failures.',
       'Owned staging controls, accessibility, responsive performance, and production cutover for a live small-business platform.',
     ],
@@ -56,6 +58,7 @@ const EXPERIENCE = [
       'Designed and shipped a serverless content platform on Cloudflare Workers and Astro with signed cookie sessions, Turnstile CAPTCHA, and edge rate limiting.',
       'Built an R2-backed media pipeline and a full client-review system with public submission, admin moderation, and aggregate rating summaries.',
       'Owned deployments, production fixes, and client feedback loops end-to-end with zero downtime incidents.',
+      'Implemented protected R2 media and review-management workflows, plus Meta webhook/photo-import tooling with signature verification and deduplication.',
     ],
   },
   {
@@ -67,6 +70,8 @@ const EXPERIENCE = [
     bullets: [
       'Built a nonprofit platform as a single integrated Astro + Cloudflare codebase with API routes and session middleware in-repo.',
       'Delivered admin backends for events, photo galleries, donor recognition, and raffle management behind signed-session auth, designed for non-technical board members.',
+      'Implemented raffle and prize-management workflows supported by D1 records, dedicated Facebook Live/photo Workers, and admin review tools.',
+      'Added evidence-based photo-import handling, correction/recovery paths, and staged release safeguards for time-sensitive fundraising operations.',
     ],
   },
 ]
