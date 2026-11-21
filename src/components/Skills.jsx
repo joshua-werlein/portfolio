@@ -55,6 +55,18 @@ const SKILL_GROUPS = [
       { name: 'bcrypt', level: 2 },
     ],
   },
+  {
+    category: 'Automation & Integrations',
+    icon: null,
+    skills: [
+      { name: 'Facebook Graph API', level: 3 },
+      { name: 'Cloudflare Cron Triggers', level: 3 },
+      { name: 'Webhooks', level: 3 },
+      { name: 'Workers AI', level: 3 },
+      { name: 'Data Validation & Reconciliation', level: 3 },
+      { name: 'Durable Objects', level: 2 },
+    ],
+  },
 ]
  
 const LEVEL_LABEL = ['', 'Familiar', 'Proficient', 'Production']
