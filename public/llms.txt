@@ -1,6 +1,6 @@
 # Joshua Werlein
 
-> Full-stack software engineer based in Mondovi, Wisconsin. Building production web applications and infrastructure for real businesses. Open to remote opportunities.
+> Software Engineer, Backend & Cloud Systems, based in Mondovi, Wisconsin. Builds production APIs, automation, and secure web platforms. Open to remote opportunities.
 
 I hold a B.S. in Software Engineering from Western Governors University and work across the full stack — TypeScript and React on the frontend, Cloudflare Workers with D1, KV, and R2 for edge platforms, and Java for native Android applications.
 
@@ -11,15 +11,15 @@ I hold a B.S. in Software Engineering from Western Governors University and work
 - [Background](https://joshuawerlein.com/#background): Career history, education, and certifications.
 - [Job Fit](https://joshuawerlein.com/#jobfit): Interactive AI tool for matching my profile against a job description.
 - [Contact](https://joshuawerlein.com/#contact): Direct message form.
-- [Resume](https://joshuawerlein.com/resume): Browser-readable resume with full employment history, skills, education, and certifications.
+- [Resume](https://joshuawerlein.com/resume): Browser-readable resume with selected production experience, skills, education, and certifications.
 
 ## Featured Projects
 
-- [Grayz'n Buffalo Bar & Grill](https://grayznbuffalo.com): Production restaurant platform built with Astro and Cloudflare Workers/Pages. Uses D1, KV, and R2 for menu content, recurring weekly specials, sessions, and managed media; includes a scheduled Facebook Graph Worker with cached, last-known-good feed behavior and Turnstile/Resend contact handling. Source: [github.com/joshua-werlein/grayzn-buffalo](https://github.com/joshua-werlein/grayzn-buffalo).
+- [Grayz'n Buffalo Bar & Grill](https://grayznbuffalo.com): Astro 7 and Cloudflare restaurant platform with D1 menus and specials, KV sessions, and R2 media. A scheduled Worker uses the Meta Graph API and Workers AI to extract poster specials, verifies source evidence, and uses guarded D1 writes. Newer verified posts can update earlier staff edits. Source: [github.com/joshua-werlein/grayzn-buffalo](https://github.com/joshua-werlein/grayzn-buffalo).
 
-- [Friends of Lake Henry](https://friendsoflakehenry.com): Production nonprofit platform using Astro and Cloudflare services for events, raffle operations, donor recognition, and moderated community photo submissions. Source: [github.com/joshua-werlein/friends-of-lake-henry](https://github.com/joshua-werlein/friends-of-lake-henry).
+- [Friends of Lake Henry](https://friendsoflakehenry.com): Astro and Cloudflare nonprofit platform for raffle operations, donor listings, and moderated community photos. Dedicated Facebook Live and winner-photo Workers verify sources and route uncertain winner rows to admin review. Source: [github.com/joshua-werlein/friends-of-lake-henry](https://github.com/joshua-werlein/friends-of-lake-henry).
 
-- [KIL Construction](https://kilcon.work): Production Astro/Cloudflare platform with signed cookie sessions, Turnstile CAPTCHA, R2-backed project media, review moderation, and secured admin tooling. Source: [github.com/joshua-werlein/kilConstruction](https://github.com/joshua-werlein/kilConstruction).
+- [KIL Construction](https://kilcon.work): Astro and Cloudflare platform with signed admin sessions, public R2 galleries, private review uploads, and review moderation. The repository includes the gallery/reviews and contact Workers and signature-verified Meta new-post import tooling. Source: [github.com/joshua-werlein/kilConstruction](https://github.com/joshua-werlein/kilConstruction).
 
 ## More Work
 
@@ -34,7 +34,7 @@ I hold a B.S. in Software Engineering from Western Governors University and work
 - [GitHub](https://github.com/joshua-werlein): Open source contributions and portfolio repositories.
 - [LinkedIn](https://www.linkedin.com/in/joshua-werlein): Professional profile and contact.
 - [Resume (HTML)](https://joshuawerlein.com/resume): Browser-readable resume page with employment history, skills, education, and certifications.
-- [Resume (PDF)](https://joshuawerlein.com/Joshua-Werlein_Resume.pdf): Direct download of the current full-stack resume.
+- [Resume (PDF)](https://joshuawerlein.com/Joshua-Werlein_Resume.pdf): Download of the public software engineering resume.
 
 ## Site Information
 
