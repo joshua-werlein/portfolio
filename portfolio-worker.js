@@ -64,8 +64,8 @@ Security: Turnstile CAPTCHA, Rate limiting, Signed cookie sessions, bcrypt, WCAG
 PRODUCTION EXPERIENCE:
 
 1. Full Stack Developer (Contract, 2026) — Grayz'n Buffalo Bar & Grill, grayznbuffalo.com
-   - Astro + Cloudflare restaurant platform using D1, KV, and R2 for menu content, recurring weekly specials, sessions, and managed media
-   - Scheduled Facebook Graph Worker caches feed/media data and preserves the last known-good feed during refresh failures; Turnstile + Resend contact delivery
+   - Built and maintain an Astro 7 + Cloudflare restaurant operations platform using D1, KV, R2, and REST-style server endpoints
+   - Implemented scheduled Facebook Graph ingestion, Workers AI poster extraction, source validation, guarded D1 updates, and cached feed failover
 
 2. Full Stack Developer (Contract, 2026) — Arkham Enterprises (Apex Solar & Construction), arkhamsolar.com
    - React + Framer Motion marketing/lead-gen site, Cloudflare Workers backend, spam-protected multi-step quote forms via Resend
@@ -75,11 +75,12 @@ PRODUCTION EXPERIENCE:
 
 4. Full Stack Software Engineer (Contract, 2025) — KIL Construction & Friends of Lake Henry, kilcon.work, friendsoflakehenry.com
    - KIL: R2-backed project media, review moderation, secured admin tooling, Worker-backed business workflows
-   - Friends of Lake Henry: D1/KV/R2 nonprofit CMS for events, raffles, donors, and moderated community photos with protected admin mutations
+   - Built and maintain a nonprofit CMS and raffle operations platform using Astro, D1, KV, and R2
 
 5. Android Engineer — Best By Manager (2025), Google Play: com.bestbymanager.app
    - Local-first kiosk inventory app using Room/SQLite, ZXing barcode scanning, Open Food Facts API, and expiration alerts
    - Owner/Admin/Employee access model with PIN sessions, bcrypt, lockout behavior, and biometric-gated owner controls
+   - Implemented protected admin flows, raffle/prize management, dedicated Facebook Live and winner-photo Workers, evidence-based extraction/review, and production recovery safeguards
 `
 
 // ── HTML escape ───────────────────────────────────────────────────────────────
