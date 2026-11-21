@@ -9,12 +9,12 @@ const FEATURED = [
     type: 'Web Platform',
     typeColor: '#B96B2D',
     problem:
-      'Restaurant staff needed to manage menus, specials, and media without engineering help. Facebook specials graphics meant duplicate website entry. Automation had to protect staff edits, while the public feed needed to survive API failures without blocking page loads.',
+      'Restaurant staff needed to manage menus, specials, and media without engineering help. Facebook specials graphics meant duplicate website entry. Automation had to respect source chronology and later staff corrections.',
     solution:
-      'Built an Astro + Cloudflare platform with authenticated staff admin, D1 menu and specials data, R2 media, and production analytics. A scheduled Worker uses Workers AI vision to read Facebook posters, then deterministic reconciliation assigns offers to Lunch, All Day, and Nightly while preserving staff edits.',
+      'Built an Astro 7 and Cloudflare platform with D1-backed menus, staff administration, R2 media, and operational analytics. A scheduled Worker uses Workers AI to extract specials from Facebook posters, verifies source dates and printed prices, and commits eligible updates with guarded D1 transactions. Newer verified posts take precedence, while older unchanged posts cannot undo a later staff correction.',
     architecture: [
       'Astro on Cloudflare Pages, with Workers, D1 data, KV sessions, and R2 staff media workflows',
-      'Normalized weekly specials: recurring defaults, manual ownership locks, revision checks, and atomic D1 writes',
+      'Structured weekly specials with recurring defaults, source timestamps, revision checks, and atomic D1 writes',
       'Workers AI vision extracts same-day Facebook offers and printed service times; unchanged posts are processed once',
       'Deterministic Lunch / All Day / Nightly reconciliation removes repeated All Day offers, in either post order',
       'Sunday-night Monday–Sunday provisioning from recurring defaults, with Monday fallback and automation-eligible blanks',
@@ -29,7 +29,63 @@ const FEATURED = [
       { label: 'GitHub', url: 'https://github.com/joshua-werlein/grayzn-buffalo', primary: false },
     ],
   },
+ {
+    id: 'lakehenry',
+    name: 'Friends of Lake Henry',
+    tagline: 'Nonprofit operations · Raffles, Facebook Live, and verified photo automation',
+    type: 'Web Platform',
+    typeColor: '#3b9eff',
+    problem:
+      'A lake-restoration nonprofit needed an easy-to-manage website plus dependable time-sensitive fundraising workflows. Volunteers needed to publish events, donors, winners and photos while outside Facebook data and image evidence could arrive late or be ambiguous.',
+    solution:
+      'Built an Astro and Cloudflare platform with authenticated administrative tools, D1/KV/R2 storage, raffle/prize records, and dedicated Facebook Live and winner-photo Workers. Added source validation, review holds, diagnostics, and recovery procedures to avoid silently publishing uncertain results.',
+    architecture: [
+      'Astro on Cloudflare Pages with protected server routes and content administration',
+      'D1 records for events, donors, raffle winners, photo imports and prize workflows',
+      'KV-based configuration and sessions; R2 for managed gallery and event images',
+      'Dedicated Workers for Facebook Live discovery and winner-photo intake',
+      'AI-assisted photo extraction with evidence checks and manual review for ambiguous results',
+      'Documented test, staging and rollback processes for time-sensitive production changes',
+    ],
+    ownership:
+      'Sole engineer responsible for architecture, deployment, support, and ongoing automation improvements.',
+    outcome:
+      'Production nonprofit platform supporting public event information, donor recognition, and operational raffle workflows.',
+    tags: ['Astro', 'TypeScript', 'Cloudflare Workers', 'D1', 'KV', 'R2', 'Facebook Graph API', 'Automation'],
+    links: [
+      { label: 'friendsoflakehenry.com', url: 'https://friendsoflakehenry.com', primary: true },
+      { label: 'GitHub', url: 'https://github.com/joshua-werlein/friends-of-lake-henry', primary: false },
+    ],
+  },
   {
+    id: 'kilcon',
+    name: 'KIL Construction',
+    tagline: 'Serverless business platform · Cloudflare Workers + R2 + signed sessions',
+    type: 'Web Platform',
+    typeColor: '#F6821F',
+    problem:
+      "A construction company needed a professional web presence with a secure admin panel for managing project gallery media — without depending on a third-party CMS or auth service, and within Cloudflare's free tier.",
+    solution:
+      'Built an Astro and Cloudflare Workers platform with signed admin sessions, D1-backed business data, R2 project media, moderated customer reviews, and a separate Turnstile/Resend contact Worker. Implemented Meta webhook validation and photo-import workflows with controlled private storage and explicit discovery/reconciliation gates.',
+    architecture: [
+     'Separate gallery/reviews and contact Workers, both maintained in the repository',
+      'Meta webhook intake with signature checks, deduplication, admin preview, and feature-gated discovery',
+      'Signed cookie sessions for admin authentication — no third-party auth service required',
+      'Cloudflare R2 object storage with custom signed-URL access for project gallery media',
+      'Turnstile CAPTCHA + in-Worker IP rate limiting on all public-facing endpoints',
+      'Client review system: public submission, admin moderation with replies and featured reviews, aggregate rating summaries',
+    ],
+    ownership:
+      'Sole engineer. Designed, built, deployed, and maintained end-to-end. Owned all production fixes and client feedback loops with zero downtime incidents.',
+    outcome:
+      "Live production site at kilcon.work. The security and infrastructure patterns built here became the foundation reused across subsequent client projects.",
+    tags: ['Cloudflare Workers', 'Astro', 'JavaScript', 'R2', 'Turnstile', 'Signed Sessions', 'D1'],
+    links: [
+      { label: 'kilcon.work', url: 'https://kilcon.work', primary: true },
+      { label: 'GitHub', url: 'https://github.com/joshua-werlein/kilConstruction', primary: false },
+    ],
+  },
+    {
     id: 'bestby',
     name: 'Best By Manager',
     tagline: 'Native Android inventory app · Java + Room + Google Play',
@@ -56,51 +112,9 @@ const FEATURED = [
       { label: 'GitHub', url: 'https://github.com/joshua-werlein/BestByManager', primary: false },
     ],
   },
-  {
-    id: 'kilcon',
-    name: 'KIL Construction',
-    tagline: 'Serverless business platform · Cloudflare Workers + R2 + signed sessions',
-    type: 'Web Platform',
-    typeColor: '#F6821F',
-    problem:
-      "A construction company needed a professional web presence with a secure admin panel for managing project gallery media — without depending on a third-party CMS or auth service, and within Cloudflare's free tier.",
-    solution:
-      'Serverless content platform on Cloudflare Workers and Astro. Signed cookie sessions handle admin authentication with no external auth dependency. R2 stores project gallery media with a custom admin UI for upload, rename, and delete operations. All public endpoints are protected by Turnstile CAPTCHA and in-Worker IP rate limiting.',
-    architecture: [
-      'Cloudflare Workers serverless backend — zero cold starts, deployed to the edge globally',
-      'Signed cookie sessions for admin authentication — no third-party auth service required',
-      'Cloudflare R2 object storage with custom signed-URL access for project gallery media',
-      'Turnstile CAPTCHA + in-Worker IP rate limiting on all public-facing endpoints',
-      'Client review system: public submission, admin moderation with replies and featured reviews, aggregate rating summaries',
-      'Architectural patterns established here (signed sessions, Turnstile + rate limiting, R2 pipeline) reused across Friends of Lake Henry and Blair Sportsmen\'s Club',
-    ],
-    ownership:
-      'Sole engineer. Designed, built, deployed, and maintained end-to-end. Owned all production fixes and client feedback loops with zero downtime incidents.',
-    outcome:
-      "Live production site at kilcon.work. The security and infrastructure patterns built here became the foundation reused across subsequent client projects.",
-    tags: ['Cloudflare Workers', 'Astro', 'JavaScript', 'R2', 'Turnstile', 'Signed Sessions', 'D1'],
-    links: [
-      { label: 'kilcon.work', url: 'https://kilcon.work', primary: true },
-      { label: 'GitHub', url: 'https://github.com/joshua-werlein/kilConstruction', primary: false },
-    ],
-  },
 ]
 
 const SECONDARY = [
-  {
-    id: 'lakehenry',
-    name: 'Friends of Lake Henry',
-    tagline: 'Nonprofit platform — events, donations, moderated community photos',
-    type: 'Web Platform',
-    typeColor: '#3b9eff',
-    description:
-      'Single integrated Astro + Cloudflare codebase with API routes and session middleware in-repo. Admin backends for events, photo galleries, donor recognition, and raffle management behind signed-session auth, designed for non-technical board members.',
-    tags: ['Cloudflare Workers', 'Astro', 'D1', 'KV', 'R2', 'Accessibility'],
-    links: [
-      { label: 'friendsoflakehenry.com', url: 'https://friendsoflakehenry.com', primary: true },
-      { label: 'GitHub', url: 'https://github.com/joshua-werlein/friends-of-lake-henry', primary: false },
-    ],
-  },
   {
     id: 'blair',
     name: "Blair Sportsmen's Club",
