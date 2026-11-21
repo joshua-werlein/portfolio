@@ -2,93 +2,72 @@ import { useEffect, useRef, useState } from 'react'
 
 const WORKER = 'https://api.joshuawerlein.com'
 
+const SUMMARY = 'Software engineer building production APIs, automated data workflows, and secure web platforms. Delivered five client systems and a published native Android app; experience spans Cloudflare Workers, D1/KV/R2, Astro/React, Java/Room, authentication, testing, and deployment.'
+
 const SKILLS = [
-  { category: 'Languages', items: ['Java', 'JavaScript', 'TypeScript', 'SQL', 'C#'] },
-  { category: 'Web & Serverless', items: ['Cloudflare Workers', 'D1', 'KV', 'R2', 'Astro', 'React', 'Node.js', 'REST APIs', 'Resend'] },
-  { category: 'Android', items: ['Android SDK', 'Room Database', 'Jetpack Components', 'ZXing / Barcode', 'Biometric Auth', 'Google Play'] },
-  { category: 'Cloud & DevOps', items: ['AWS (CCP)', 'Cloudflare Pages', 'GitHub / Git', 'CI/CD', 'MySQL'] },
-  { category: 'Security', items: ['Turnstile CAPTCHA', 'Rate Limiting', 'Signed Cookie Sessions', 'bcrypt', 'WCAG AA'] },
+  { category: 'Languages', items: 'TypeScript, JavaScript, Java, SQL, C#' },
+  { category: 'Backend / Cloud', items: 'Cloudflare Workers, D1, KV, R2, REST APIs, authentication, serverless deployment, Workers AI' },
+  { category: 'Frontend / Tools', items: 'Astro, React, Git/GitHub, CI/CD, Resend, Turnstile, Room/SQLite, Android, AWS' },
 ]
 
 const EXPERIENCE = [
   {
-    company: "Grayz'n Buffalo Bar & Grill",
+    company: 'Grayz’n Buffalo Bar & Grill',
     url: 'https://grayznbuffalo.com',
-    role: 'Software Engineer — Contract',
+    role: 'Software Engineer (Contract)',
     period: '2026',
-    type: 'Freelance · Remote',
     bullets: [
-      'Delivered an Astro + Cloudflare restaurant platform using D1, KV, and R2 for menu content, recurring weekly specials, admin sessions, and managed media.',
-      'Developed a scheduled Facebook/Workers AI pipeline that validates restaurant-specials images and applies eligible updates through guarded D1 transactions.',
-      'Designed source-version and timestamp controls so older posts cannot undo newer staff corrections; maintained cached public content during upstream failures.',
-      'Built a scheduled Facebook Graph Worker that caches feed and media to KV and preserves last known-good content during refresh failures.',
-      'Owned staging controls, accessibility, responsive performance, and production cutover for a live small-business platform.',
-    ],
-  },
-  {
-    company: 'Arkham Enterprises (Apex Solar & Construction)',
-    url: 'https://www.arkhamsolar.com',
-    role: 'Software Engineer — Contract',
-    period: '2026',
-    type: 'Freelance · Remote',
-    bullets: [
-      'Built a React SPA marketing and lead-gen site served from a Cloudflare Worker with spam-protected contact and multi-step quote-request forms via Resend.',
-      'Implemented deep-linked quote flows (?type= URL params) for service pages, ads, and AI agent handoffs.',
-      'Shipped LocalBusiness JSON-LD structured data, llms.txt agent discoverability, and WCAG AA accessibility.',
-    ],
-  },
-  {
-    company: "Blair Sportsmen's Club",
-    url: 'https://blairsportsmensclub.com',
-    role: 'Software Engineer — Contract',
-    period: '2025–2026',
-    type: 'Freelance · Remote · Nonprofit',
-    bullets: [
-      'Built an event and reservation platform: D1-backed availability calendar, calendar-to-form prefill, and Turnstile-protected contact pipeline via Resend.',
-      'Shipped trap-league leaderboards with per-event round breakdowns in a deep-linkable modal (#trap-scores routing).',
-    ],
-  },
-  {
-    company: 'KIL Construction',
-    url: 'https://kilcon.work',
-    role: 'Software Engineer — Contract',
-    period: '2025',
-    type: 'Freelance · Remote',
-    bullets: [
-      'Designed and shipped a serverless content platform on Cloudflare Workers and Astro with signed cookie sessions, Turnstile CAPTCHA, and edge rate limiting.',
-      'Built an R2-backed media pipeline and a full client-review system with public submission, admin moderation, and aggregate rating summaries.',
-      'Owned deployments, production fixes, and client feedback loops end-to-end with zero downtime incidents.',
-      'Implemented protected R2 media and review-management workflows, plus Meta webhook/photo-import tooling with signature verification and deduplication.',
+      'Built a production Astro/Cloudflare restaurant platform with authenticated management of menus, recurring specials, D1 data, KV sessions, and R2 images.',
+      'Implemented a scheduled Facebook Graph and Workers AI pipeline to extract poster specials; source-date checks and guarded D1 writes prevent older posts from reversing newer corrections.',
     ],
   },
   {
     company: 'Friends of Lake Henry',
     url: 'https://friendsoflakehenry.com',
-    role: 'Software Engineer — Contract',
+    role: 'Software Engineer (Contract)',
     period: '2025',
-    type: 'Freelance · Remote · Nonprofit',
     bullets: [
-      'Built a nonprofit platform as a single integrated Astro + Cloudflare codebase with API routes and session middleware in-repo.',
-      'Delivered admin backends for events, photo galleries, donor recognition, and raffle management behind signed-session auth, designed for non-technical board members.',
-      'Implemented raffle and prize-management workflows supported by D1 records, dedicated Facebook Live/photo Workers, and admin review tools.',
-      'Added evidence-based photo-import handling, correction/recovery paths, and staged release safeguards for time-sensitive fundraising operations.',
+      'Developed a nonprofit operations platform for raffle records, prize calendars, donors, events, and moderated community media using Astro, Cloudflare Workers, D1/KV/R2.',
+      'Added Facebook Live and winner-photo automation with source verification, AI-assisted review holds, administrative correction paths, and documented release/rollback checks.',
     ],
   },
-]
-
-const PROJECTS = [
   {
-    name: 'Best By Manager',
-    url: 'https://play.google.com/store/apps/details?id=com.bestbymanager.app',
+    company: 'KIL Construction',
+    url: 'https://kilcon.work',
+    role: 'Software Engineer (Contract)',
     period: '2025',
-    description: 'Native Android kiosk app for product expiration tracking in retail and food-service environments. Published to Google Play through a full release lifecycle: closed beta, staged rollout, v2.0.0 in production.',
     bullets: [
-      'Offline-first Room/SQLite database — fully functional without network connectivity.',
-      'ZXing barcode scanner integrated with the Open Food Facts API for automatic product lookup.',
-      'Three-tier permission model: Owner (biometric), Admin (PIN + bcrypt), Employee — each with scoped access.',
-      'AlarmManager-based expiration alerts with configurable lead-time per product.',
+      'Created an Astro/Cloudflare business platform with authenticated admin workflows, R2-backed project galleries, review moderation, and Turnstile-protected contact handling.',
+      'Implemented signed Meta webhook intake, deduplication, and gated Facebook photo imports; separated private review media from public gallery delivery.',
     ],
-    tags: 'Java · Android SDK · Room Database · Jetpack · ZXing · Biometric Auth',
+  },
+  {
+    company: 'Blair Sportsmen’s Club',
+    url: 'https://blairsportsmensclub.com',
+    role: 'Software Engineer (Contract)',
+    period: '2025–2026',
+    bullets: [
+      'Built D1-backed availability and reservation workflows with durable request records, magic-link administration, events, and trap-league leaderboards.',
+    ],
+  },
+  {
+    company: 'Arkham Enterprises / Apex Solar',
+    url: 'https://www.arkhamsolar.com',
+    role: 'Software Engineer (Contract)',
+    period: '2026',
+    bullets: [
+      'Built a React/Cloudflare lead-generation platform with multi-step quote forms, Resend delivery, URL-driven service context, structured metadata, and accessible navigation.',
+    ],
+  },
+  {
+    company: 'Best By Manager',
+    url: 'https://play.google.com/store/apps/details?id=com.bestbymanager.app',
+    role: 'Android Engineer',
+    period: '2025',
+    type: 'independent project',
+    bullets: [
+      'Published a Java/Room offline-first inventory app on Google Play with barcode scanning, expiration alerts, and Owner/Admin/Employee access control.',
+    ],
   },
 ]
 
@@ -184,31 +163,24 @@ export default function Resume() {
 
         {/* Header */}
         <header className="r-header">
-          <div>
-            <h1 className="r-name">Joshua Werlein</h1>
-            <p className="r-title">Full-Stack Software Engineer</p>
-          </div>
+          <h1 className="r-name">Joshua Werlein</h1>
           <div className="r-contact-list">
+            <span className="r-contact-item">Mondovi, Wisconsin</span>
+            <span className="r-sep">·</span>
             <a href="mailto:jjwerlein@gmail.com" className="r-contact-item">jjwerlein@gmail.com</a>
             <span className="r-sep">·</span>
-            <span className="r-contact-item">Mondovi, WI</span>
+            <a href="https://linkedin.com/in/joshua-werlein" target="_blank" rel="noreferrer" className="r-contact-item">LinkedIn</a>
             <span className="r-sep">·</span>
-            <a href="https://linkedin.com/in/joshua-werlein" target="_blank" rel="noreferrer" className="r-contact-item">linkedin.com/in/joshua-werlein</a>
+            <a href="https://github.com/joshua-werlein" target="_blank" rel="noreferrer" className="r-contact-item">GitHub</a>
             <span className="r-sep">·</span>
-            <a href="https://github.com/joshua-werlein" target="_blank" rel="noreferrer" className="r-contact-item">github.com/joshua-werlein</a>
+            <a href="/" className="r-contact-item">Portfolio</a>
           </div>
         </header>
 
         {/* Summary */}
         <div className="r-section" aria-labelledby="r-summary">
-          <h2 id="r-summary" className="r-section-title">Summary</h2>
-          <p className="r-body">
-            Full-stack software engineer with production experience delivering end-to-end web platforms and a
-            published native Android application. Work spans Cloudflare edge infrastructure (Workers, D1, KV, R2),
-            Astro and React frontends, and native Android development in Java. Comfortable owning the full release
-            lifecycle — from architecture through deployment and ongoing maintenance. Open to remote software
-            engineering roles.
-          </p>
+          <h2 id="r-summary" className="r-section-title">Professional Summary</h2>
+          <p className="r-body">{SUMMARY}</p>
         </div>
 
         {/* Skills */}
@@ -218,7 +190,7 @@ export default function Resume() {
             {SKILLS.map(g => (
               <div key={g.category} className="r-skill-row">
                 <span className="r-skill-cat">{g.category}:</span>
-                <span className="r-skill-items">{g.items.join(', ')}</span>
+                <span className="r-skill-items">{g.items}</span>
               </div>
             ))}
           </div>
@@ -226,7 +198,7 @@ export default function Resume() {
 
         {/* Experience */}
         <div className="r-section" aria-labelledby="r-experience">
-          <h2 id="r-experience" className="r-section-title">Client Experience</h2>
+          <h2 id="r-experience" className="r-section-title">Professional Experience</h2>
           <div className="r-entries">
             {EXPERIENCE.map(e => (
               <div key={e.company} className="r-entry">
@@ -235,8 +207,7 @@ export default function Resume() {
                     <h3 className="r-entry-title">{e.role}</h3>
                     <div className="r-entry-sub">
                       <a href={e.url} target="_blank" rel="noreferrer" className="r-entry-company">{e.company}</a>
-                      <span className="r-sep">·</span>
-                      <span className="r-entry-type">{e.type}</span>
+                      {e.type && <span className="r-entry-type">({e.type})</span>}
                     </div>
                   </div>
                   <span className="r-entry-period">{e.period}</span>
@@ -251,35 +222,9 @@ export default function Resume() {
           </div>
         </div>
 
-        {/* Projects */}
-        <div className="r-section" aria-labelledby="r-projects">
-          <h2 id="r-projects" className="r-section-title">Projects</h2>
-          <div className="r-entries">
-            {PROJECTS.map(p => (
-              <div key={p.name} className="r-entry">
-                <div className="r-entry-header">
-                  <div>
-                    <h3 className="r-entry-title">
-                      <a href={p.url} target="_blank" rel="noreferrer" className="r-entry-company">{p.name}</a>
-                    </h3>
-                    <div className="r-entry-type" style={{ marginTop: 2 }}>{p.tags}</div>
-                  </div>
-                  <span className="r-entry-period">{p.period}</span>
-                </div>
-                <p className="r-body" style={{ marginBottom: 8 }}>{p.description}</p>
-                <ul className="r-bullets">
-                  {p.bullets.map((b, i) => (
-                    <li key={i} className="r-bullet">{b}</li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Education */}
+        {/* Education and certifications */}
         <div className="r-section" aria-labelledby="r-education">
-          <h2 id="r-education" className="r-section-title">Education</h2>
+          <h2 id="r-education" className="r-section-title">Education &amp; Certifications</h2>
           <div className="r-entries">
             {EDUCATION.map(e => (
               <div key={e.degree} className="r-entry">
@@ -292,13 +237,6 @@ export default function Resume() {
                 </div>
               </div>
             ))}
-          </div>
-        </div>
-
-        {/* Certifications */}
-        <div className="r-section" aria-labelledby="r-certs">
-          <h2 id="r-certs" className="r-section-title">Certifications</h2>
-          <div className="r-entries">
             {CERTS.map(c => (
               <div key={c.name} className="r-entry">
                 <div className="r-entry-header">
@@ -347,14 +285,6 @@ export default function Resume() {
           font-weight: 800;
           letter-spacing: -0.02em;
           margin-bottom: 4px;
-        }
-
-        .r-title {
-          font-family: var(--font-mono);
-          font-size: 0.9rem;
-          color: var(--accent);
-          letter-spacing: 0.04em;
-          margin-bottom: 14px;
         }
 
         .r-contact-list {
@@ -527,7 +457,6 @@ export default function Resume() {
           }
 
           .r-name { color: black !important; font-size: 22pt !important; }
-          .r-title { color: #333 !important; }
           .r-section-title { color: #333 !important; border-color: #ccc !important; }
           .r-header { border-color: #333 !important; }
           .r-contact-item, .r-sep { color: #444 !important; }
