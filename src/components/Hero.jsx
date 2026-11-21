@@ -34,7 +34,7 @@ export default function Hero({ onScrollTo }) {
 
             {/* Role — primary heading */}
             <h1 style={{ fontSize: 'clamp(2rem, 5vw, 3.2rem)', fontWeight: 800, lineHeight: 1.1, marginBottom: 16, color: 'var(--text)' }}>
-              Full-Stack Software Engineer
+              Software Engineer · Backend & Cloud Systems
             </h1>
 
             {/* Value proposition */}
@@ -46,7 +46,7 @@ export default function Hero({ onScrollTo }) {
               lineHeight: 1.4,
               maxWidth: 520,
             }}>
-              Building production web applications and infrastructure for real businesses.
+              Building dependable APIs, automation, and production software for real organizations.
             </p>
 
             {/* Name */}
@@ -69,9 +69,10 @@ export default function Hero({ onScrollTo }) {
               lineHeight: 1.75,
               marginBottom: 36,
             }}>
-              I own work across the full stack — from application and database architecture
-              through edge deployment on Cloudflare. Five production client platforms shipped,
-              plus a published native Android app with real users.
+              I build and maintain real systems — from REST APIs and database-backed workflows
+              through Cloudflare Workers, automated integrations, and production deployments.
+              My experience includes client platforms for businesses and nonprofits, plus a
+              published native Android app.
             </p>
 
             {/* CTAs */}
