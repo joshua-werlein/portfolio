@@ -41,8 +41,8 @@ const ENGAGEMENTS = [
     url: 'https://friendsoflakehenry.com',
     role: 'Software Engineer — Contract',
     type: 'Freelance · Remote · Nonprofit',
-    period: '2025',
-    context: 'Nonprofit CMS — single integrated Astro + Cloudflare codebase with admin workflows for events, donor recognition, and photo submissions.',
+    period: '2025 - 2026',
+    context: 'Nonprofit platform with D1/KV/R2, event and raffle administration, Facebook Live/photo Workers, and guarded content-review workflows.',
   },
 ]
 
