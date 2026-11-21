@@ -76,11 +76,11 @@ PRODUCTION EXPERIENCE:
 4. Full Stack Software Engineer (Contract, 2025) — KIL Construction & Friends of Lake Henry, kilcon.work, friendsoflakehenry.com
    - KIL: R2-backed project media, review moderation, secured admin tooling, Worker-backed business workflows
    - Built and maintain a nonprofit CMS and raffle operations platform using Astro, D1, KV, and R2
+   - Friends of Lake Henry: implemented protected admin flows, raffle/prize management, dedicated Facebook Live and winner-photo Workers, evidence-based extraction/review, and production recovery safeguards
 
 5. Android Engineer — Best By Manager (2025), Google Play: com.bestbymanager.app
    - Local-first kiosk inventory app using Room/SQLite, ZXing barcode scanning, Open Food Facts API, and expiration alerts
    - Owner/Admin/Employee access model with PIN sessions, bcrypt, lockout behavior, and biometric-gated owner controls
-   - Implemented protected admin flows, raffle/prize management, dedicated Facebook Live and winner-photo Workers, evidence-based extraction/review, and production recovery safeguards
 `
 
 // ── HTML escape ───────────────────────────────────────────────────────────────
