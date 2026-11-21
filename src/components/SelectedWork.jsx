@@ -85,12 +85,17 @@ const FEATURED = [
       { label: 'GitHub', url: 'https://github.com/joshua-werlein/kilConstruction', primary: false },
     ],
   },
-    {
+]
+
+const SECONDARY = [
+  {
     id: 'bestby',
     name: 'Best By Manager',
     tagline: 'Native Android inventory app · Java + Room + Google Play',
     type: 'Android App',
     typeColor: '#34A853',
+    description:
+      'Published, offline-first Android inventory app with barcode scanning, expiration alerts, and role-based access for shared devices.',
     problem:
       'Retail and food-service workers needed a shared-device Android app for tracking product expiration dates, scanning barcodes for instant product lookup, and receiving expiration alerts — with a permission model suited to team environments where multiple staff share one device.',
     solution:
@@ -112,22 +117,6 @@ const FEATURED = [
       { label: 'GitHub', url: 'https://github.com/joshua-werlein/BestByManager', primary: false },
     ],
   },
-]
-
-const SECONDARY = [
-  {
-    id: 'blair',
-    name: "Blair Sportsmen's Club",
-    tagline: 'Event & reservation platform — calendar, trap league scores',
-    type: 'Web Platform',
-    typeColor: '#2c583d',
-    description:
-      "Event and reservation platform for a recreational club established in 1968. Live barn-availability calendar with D1-backed reserved/booked/event states, calendar-to-form prefill, Turnstile-protected contact pipeline via Resend, and deep-linkable trap-league leaderboards.",
-    tags: ['Cloudflare Workers', 'Astro', 'JavaScript', 'Turnstile', 'Resend', 'D1'],
-    links: [
-      { label: 'blairsportsmensclub.com', url: 'https://blairsportsmensclub.com', primary: true },
-    ],
-  },
   {
     id: 'arkham',
     name: 'Arkham Enterprises',
@@ -140,6 +129,19 @@ const SECONDARY = [
     links: [
       { label: 'arkhamsolar.com', url: 'https://www.arkhamsolar.com', primary: true },
       { label: 'GitHub', url: 'https://github.com/joshua-werlein/arkham-solar', primary: false },
+    ],
+  },
+  {
+    id: 'blair',
+    name: "Blair Sportsmen's Club",
+    tagline: 'Event & reservation platform — calendar, trap league scores',
+    type: 'Web Platform',
+    typeColor: '#2c583d',
+    description:
+      "Event and reservation platform for a recreational club established in 1968. Live barn-availability calendar with D1-backed reserved/booked/event states, calendar-to-form prefill, Turnstile-protected contact pipeline via Resend, and deep-linkable trap-league leaderboards.",
+    tags: ['Cloudflare Workers', 'Astro', 'JavaScript', 'Turnstile', 'Resend', 'D1'],
+    links: [
+      { label: 'blairsportsmensclub.com', url: 'https://blairsportsmensclub.com', primary: true },
     ],
   },
 ]
@@ -229,6 +231,19 @@ export default function SelectedWork() {
                     {project.description}
                   </p>
 
+                  {project.architecture && (
+                    <details className="secondary-case-study">
+                      <summary>View case study</summary>
+                      <p>{project.problem}</p>
+                      <p>{project.solution}</p>
+                      <ul>
+                        {project.architecture.map(item => <li key={item}>{item}</li>)}
+                      </ul>
+                      <p>{project.ownership}</p>
+                      <p>{project.outcome}</p>
+                    </details>
+                  )}
+
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5, marginBottom: 16 }}>
                     {project.tags.map(t => (
                       <span key={t} className="tag" style={{ fontSize: '0.7rem', padding: '2px 8px' }}>{t}</span>
@@ -258,6 +273,23 @@ export default function SelectedWork() {
       </div>
 
       <style>{`
+        .secondary-case-study {
+          color: var(--text-2);
+          font-size: 0.85rem;
+          line-height: 1.65;
+          margin-bottom: 16px;
+        }
+        .secondary-case-study summary {
+          color: var(--accent);
+          cursor: pointer;
+        }
+        .secondary-case-study p, .secondary-case-study ul {
+          margin-top: 8px;
+        }
+        .secondary-case-study ul {
+          list-style: disc;
+          padding-left: 20px;
+        }
         @media (max-width: 768px) {
           .secondary-grid {
             grid-template-columns: 1fr !important;

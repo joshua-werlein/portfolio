@@ -1,5 +1,3 @@
-import { WORKER } from '../App'
-
 export default function Hero({ onScrollTo }) {
   return (
     <section id="hero" style={{ paddingTop: 120, paddingBottom: 96 }}>
@@ -33,8 +31,9 @@ export default function Hero({ onScrollTo }) {
             </div>
 
             {/* Role — primary heading */}
-            <h1 style={{ fontSize: 'clamp(2rem, 5vw, 3.2rem)', fontWeight: 800, lineHeight: 1.1, marginBottom: 16, color: 'var(--text)' }}>
-              Software Engineer · Backend & Cloud Systems
+            <h1 className="hero-title">
+              Software Engineer
+              <span className="hero-specialty">Backend &amp; <span>Cloud Systems</span></span>
             </h1>
 
             {/* Value proposition */}
@@ -148,6 +147,28 @@ export default function Hero({ onScrollTo }) {
         .hero-text-col {
           position: relative;
           isolation: isolate;
+          min-width: 0;
+          container-type: inline-size;
+        }
+
+        .hero-title {
+          font-size: clamp(1.5rem, 6.65cqi, 3.2rem);
+          font-weight: 800;
+          line-height: 1.1;
+          margin-bottom: 16px;
+          color: var(--text);
+        }
+
+        .hero-specialty {
+          display: block;
+          margin-top: 6px;
+          font-size: clamp(1.25rem, 5.2cqi, 2.35rem);
+          font-weight: 700;
+          text-wrap: balance;
+        }
+
+        .hero-specialty > span {
+          white-space: nowrap;
         }
 
         .hero-text-col::before {

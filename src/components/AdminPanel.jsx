@@ -1,5 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
-import { WORKER } from '../App'
+import { useState, useEffect, useRef, useCallback } from 'react'
  
 const STATUS_OPTIONS = ['new', 'contacted', 'interviewing', 'closed', 'archived']
 const STATUS_COLORS = {
@@ -47,7 +46,7 @@ export default function AdminPanel({ workerUrl, onClose }) {
     }
   }
  
-  const fetchLeads = async () => {
+  const fetchLeads = useCallback(async () => {
     setLeadsLoading(true)
     try {
       const res = await fetch(`${workerUrl}/leads`, {
@@ -57,9 +56,9 @@ export default function AdminPanel({ workerUrl, onClose }) {
       setLeads(data.leads || [])
     } catch { /* silent */ }
     finally { setLeadsLoading(false) }
-  }
+  }, [workerUrl])
  
-  const fetchAnalytics = async () => {
+  const fetchAnalytics = useCallback(async () => {
     setAnalyticsLoading(true)
     try {
       const res = await fetch(`${workerUrl}/analytics`, {
@@ -69,13 +68,13 @@ export default function AdminPanel({ workerUrl, onClose }) {
       setAnalytics(data)
     } catch { /* silent */ }
     finally { setAnalyticsLoading(false) }
-  }
+  }, [workerUrl])
  
   useEffect(() => {
     if (!authed) return
     if (tab === 'leads') fetchLeads()
     if (tab === 'analytics') fetchAnalytics()
-  }, [authed, tab])
+  }, [authed, tab, fetchLeads, fetchAnalytics])
  
   // Auto-save notes after 1s pause
   const handleNoteChange = (val) => {

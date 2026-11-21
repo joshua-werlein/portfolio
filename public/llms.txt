@@ -6,7 +6,7 @@ I hold a B.S. in Software Engineering from Western Governors University and work
 
 ## Portfolio Sections
 
-- [Selected Work](https://joshuawerlein.com/#work): Three featured case studies (Grayz'n Buffalo, Best By Manager, KIL Construction) plus a secondary grid of additional projects.
+- [Selected Work](https://joshuawerlein.com/#work): Three featured case studies (Grayz'n Buffalo, Friends of Lake Henry, KIL Construction) plus a secondary grid of additional projects.
 - [Technical Capabilities](https://joshuawerlein.com/#skills): Languages, frameworks, and tools organized by category with Production / Proficient / Familiar levels.
 - [Background](https://joshuawerlein.com/#background): Career history, education, and certifications.
 - [Job Fit](https://joshuawerlein.com/#jobfit): Interactive AI tool for matching my profile against a job description.
@@ -17,15 +17,17 @@ I hold a B.S. in Software Engineering from Western Governors University and work
 
 - [Grayz'n Buffalo Bar & Grill](https://grayznbuffalo.com): Production restaurant platform built with Astro and Cloudflare Workers/Pages. Uses D1, KV, and R2 for menu content, recurring weekly specials, sessions, and managed media; includes a scheduled Facebook Graph Worker with cached, last-known-good feed behavior and Turnstile/Resend contact handling. Source: [github.com/joshua-werlein/grayzn-buffalo](https://github.com/joshua-werlein/grayzn-buffalo).
 
-- [Best By Manager](https://play.google.com/store/apps/details?id=com.bestbymanager.app): Published Android inventory app for shared-device retail and food-service workflows. Uses Room/SQLite, ZXing barcode scanning, local expiration alerts, and Owner/Admin/Employee access controls with biometric and PIN authentication. Source: [github.com/joshua-werlein/BestByManager](https://github.com/joshua-werlein/BestByManager).
+- [Friends of Lake Henry](https://friendsoflakehenry.com): Production nonprofit platform using Astro and Cloudflare services for events, raffle operations, donor recognition, and moderated community photo submissions. Source: [github.com/joshua-werlein/friends-of-lake-henry](https://github.com/joshua-werlein/friends-of-lake-henry).
 
 - [KIL Construction](https://kilcon.work): Production Astro/Cloudflare platform with signed cookie sessions, Turnstile CAPTCHA, R2-backed project media, review moderation, and secured admin tooling. Source: [github.com/joshua-werlein/kilConstruction](https://github.com/joshua-werlein/kilConstruction).
 
-- [Friends of Lake Henry](https://friendsoflakehenry.com): Production nonprofit platform using Astro and Cloudflare services for events, raffle operations, donor recognition, and moderated community photo submissions. Source: [github.com/joshua-werlein/friends-of-lake-henry](https://github.com/joshua-werlein/friends-of-lake-henry).
+## More Work
 
-- [Blair Sportsmen's Club](https://blairsportsmensclub.com): Event and reservation platform with a D1-backed availability calendar, reservation requests, and trap-league scoring.
+- [Best By Manager](https://play.google.com/store/apps/details?id=com.bestbymanager.app): Published Android inventory app for shared-device retail and food-service workflows. Uses Room/SQLite, ZXing barcode scanning, local expiration alerts, and Owner/Admin/Employee access controls with biometric and PIN authentication. Source: [github.com/joshua-werlein/BestByManager](https://github.com/joshua-werlein/BestByManager).
 
 - [Arkham Enterprises](https://www.arkhamsolar.com): Live production marketing and lead-gen site for a solar and construction company. React SPA served from a Cloudflare Worker with multi-step quote-request forms, Resend delivery, deep-linked service context, structured metadata, and accessibility-focused routing. Source: [github.com/joshua-werlein/arkham-solar](https://github.com/joshua-werlein/arkham-solar).
+
+- [Blair Sportsmen's Club](https://blairsportsmensclub.com): Event and reservation platform with a D1-backed availability calendar, reservation requests, and trap-league scoring.
 
 ## External Links
 
