@@ -60,31 +60,31 @@ const FEATURED = [
   {
     id: 'kilcon',
     name: 'KIL Construction',
-    tagline: 'Serverless business platform · Cloudflare Workers + R2 + signed sessions',
+    tagline: 'Construction content platform · Astro + Cloudflare Workers + D1/R2',
     type: 'Web Platform',
     typeColor: '#F6821F',
     problem:
-      "A construction company needed a professional web presence with a secure admin panel for managing project gallery media — without depending on a third-party CMS or auth service, and within Cloudflare's free tier.",
+      'A construction company needed a professional site with secure, low-maintenance project galleries and customer reviews. Facebook photos also needed to reach the website without duplicating older, manually uploaded project images or exposing private media.',
     solution:
-      'Built an Astro and Cloudflare Workers platform with signed admin sessions, D1-backed business data, R2 project media, moderated customer reviews, and a separate Turnstile/Resend contact Worker. Implemented Meta webhook validation and photo-import workflows with controlled private storage and explicit discovery/reconciliation gates.',
+      'Built an Astro 5 website on Cloudflare Pages with independently deployed gallery/reviews and contact Workers, signed admin sessions, D1-backed project and photo records, R2 media, and moderated reviews. Added signature-verified Meta webhooks for new Page posts, an admin photo-comparison workflow for historical imports, and safeguards that require explicit approval before older photos are published.',
     architecture: [
-     'Separate gallery/reviews and contact Workers, both maintained in the repository',
-      'Meta webhook intake with signature checks, deduplication, admin preview, and feature-gated discovery',
-      'Signed cookie sessions for admin authentication — no third-party auth service required',
-      'Cloudflare R2 object storage with custom signed-URL access for project gallery media',
-      'Turnstile CAPTCHA + in-Worker IP rate limiting on all public-facing endpoints',
-      'Client review system: public submission, admin moderation with replies and featured reviews, aggregate rating summaries',
+      'Astro 5 server-rendered site on Cloudflare Pages with separate gallery/reviews and contact Workers',
+      'D1 stores project and album mappings, photo metadata, visibility, historical review decisions, and import state; R2 stores actual image files, including restricted private media',
+      'Meta Page webhook verification, deduplicated new-post imports, bounded retries, and feature-gated album discovery',
+      'Admin comparison of Facebook versus website photos with perceptual-hash duplicate hints and Import / Skip / Review later decisions',
+      'Manual R2 galleries and Facebook-managed projects in the admin, with hide, restore, move, and confirmation-protected deletion controls',
+      'Signed cookie sessions, image access checks, request rate limits, Turnstile-protected contact, and Resend delivery',
     ],
     ownership:
-      'Sole engineer. Designed, built, deployed, and maintained end-to-end. Owned all production fixes and client feedback loops with zero downtime incidents.',
+      'Sole engineer responsible for architecture, implementation, deployment, security fixes, and ongoing client support.',
     outcome:
-      "Live production site at kilcon.work. The security and infrastructure patterns built here became the foundation reused across subsequent client projects.",
-    tags: ['Cloudflare Workers', 'Astro', 'JavaScript', 'R2', 'Turnstile', 'Signed Sessions', 'D1'],
+      'Production website at kilcon.work with secure gallery administration, Facebook new-post automation, and controlled historical photo reconciliation. Broad historical import and automated album discovery remain separately gated.',
+    tags: ['Astro', 'Cloudflare Workers', 'D1', 'R2', 'Facebook Graph API', 'Webhooks', 'JavaScript', 'Turnstile', 'Resend'],
     links: [
       { label: 'kilcon.work', url: 'https://kilcon.work', primary: true },
       { label: 'GitHub', url: 'https://github.com/joshua-werlein/kilConstruction', primary: false },
     ],
-  },
+  }
 ]
 
 const SECONDARY = [
